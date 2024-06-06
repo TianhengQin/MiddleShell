@@ -38,21 +38,13 @@ int val_tokn(int tokn, int prev, t_sh *sh)
 
 char **check(t_sh *sh, char *cmd)
 {
-    char *rcmd = reload(sh, cmd);
-    char **cmds = ft_split(rcmd, "\20");
-    sh->bff = ft_split(sh->bf, "\20");
-
-int i = -1;
-while(sh->bff[++i]){
-    fprint(1, "[%s]",sh->bff[i]);
-}
-    fprint(1, "\n");
-
+    reload(sh, cmd);
+    char **cmds = ft_split(sh->bf, "\21");
 
     if (!cmds)
         return (char **)free_sh(sh, 2);
 
-    i = -1;
+    int i = -1;
     int tokn;
     sh->tokn = -1;
     sh->lp = 0;
@@ -65,21 +57,17 @@ while(sh->bff[++i]){
         {
             fprint(2, "\nminish: parse error near `%s'\n", cmds[i]);
             free2(cmds);
-            free(rcmd);
             return (0);
         }
         sh->tokn = tokn;
     }
-    // fprint(1, "\n");
     if (sh->lp > sh->rp || tokn > 2)
     {
         fprint(2, "\nminish: parse error near `\\n'\n");
         free2(cmds);
-        free(rcmd);
         sh->exit_c = 1;
         return (0);
     }
-    free(rcmd);
     fprint(1, "\n");
     return (cmds);
 }

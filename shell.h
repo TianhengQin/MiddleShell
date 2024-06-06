@@ -100,6 +100,8 @@ int			all_sp(char *s);
 int			is_in(char *s, char c);
 char		*trm_sp(char *s);
 //init
+void init_bf(t_sh *sh);
+void apend_bf(t_sh *sh, char c);
 void		set_env(t_sh *shell);
 void		set_env_r(t_sh *shell);
 void		set_no_env(t_sh *sh);

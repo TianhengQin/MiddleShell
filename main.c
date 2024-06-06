@@ -71,7 +71,13 @@ void	run_shell(t_sh *sh)
 		}
 		free(sh->cmd);
 		free2(sh->cs);
-		// printf("%s\n", load_var(shell, cmd));
+		sh->cmd = sdup(sh->bf);
+		if (!(sh->cmd))
+			free_sh(sh, 2);
+		p = load_var(sh, sh->cmd);
+		printf("%s\n", p);
+		free(p);
+		free(sh->cmd);
         // exe_all(sh, sh->cmd);
 	}
 	printf("\n[Process completed]\n\n");
@@ -81,6 +87,7 @@ int	all(char **env)
 {
 	t_sh	sh;
 
+	sh.exit_c = 123;
 	sh.env = env;
 	sh.bf = malloc(BF_SZ + 1);
 	sh.bf[0] = 0;
