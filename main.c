@@ -60,23 +60,42 @@ void	run_shell(t_sh *sh)
 		if (!sh->cmd[0] || all_sp(sh->cmd))
 		{
 			free(sh->cmd);
+			sh->cmd = 0;
             continue;
 		}
 		add_history(sh->cmd);
-		sh->cs = check(sh, sh->cmd);
-		if (!(sh->cs))
+		if (!check(sh, sh->cmd))
 		{
 			free(sh->cmd);
+			sh->cmd = 0;
 			continue;
 		}
 		free(sh->cmd);
-		free2(sh->cs);
 		sh->cmd = sdup(sh->bf);
 		if (!(sh->cmd))
 			free_sh(sh, 2);
-		p = load_var(sh, sh->cmd);
-		printf("%s\n", p);
-		free(p);
+		sh->cmd = load_var(sh, sh->cmd);
+		if (!sh->cmd)
+			free_sh(sh, 2);
+		printf("%s\n", sh->cmd);
+		sh->cmd  = dequo(sh, sh->cmd);
+		if (!sh->cmd)
+			free_sh(sh, 2);
+		if (!sh->cmd[0])
+		{
+			free(sh->cmd);
+			continue ;
+		}
+		printf("%s\n", sh->cmd);
+		sh->cmd  = load_wikd(sh, sh->cmd);
+		if (!sh->cmd)
+			free_sh(sh, 2);
+		if (!sh->cmd[0])
+		{
+			free(sh->cmd);
+			continue ;
+		}
+		printf("-%s-\n", sh->cmd);
 		free(sh->cmd);
         // exe_all(sh, sh->cmd);
 	}

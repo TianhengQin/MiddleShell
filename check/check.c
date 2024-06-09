@@ -36,16 +36,17 @@ int val_tokn(int tokn, int prev, t_sh *sh)
     return 0;
 }
 
-char **check(t_sh *sh, char *cmd)
+int check(t_sh *sh, char *cmd)
 {
-    reload(sh, cmd);
-    char **cmds = ft_split(sh->bf, "\21");
-
-    if (!cmds)
-        return (char **)free_sh(sh, 2);
-
-    int i = -1;
+    char **cmds;
+    int i;
     int tokn;
+
+    reload(sh, cmd);
+    cmds = ft_split(sh->bf, "\21");
+    if (!cmds)
+        free_sh(sh, 2);
+    i = -1;
     sh->tokn = -1;
     sh->lp = 0;
     sh->rp = 0;
@@ -69,5 +70,6 @@ char **check(t_sh *sh, char *cmd)
         return (0);
     }
     fprint(1, "\n");
-    return (cmds);
+    free2(cmds);
+    return (1);
 }

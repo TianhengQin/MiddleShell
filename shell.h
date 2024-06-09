@@ -36,7 +36,7 @@
 # include <fcntl.h>
 
 # define HERE_DOC_NAME ".here_doc_a72>7!e;wL=rouN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
-# define DC1 ';'
+# define DC1 '\21'
 # define BF_SZ 8192
 # define BFF_SZ 128
 
@@ -102,6 +102,8 @@ char		*trm_sp(char *s);
 //init
 void init_bf(t_sh *sh);
 void apend_bf(t_sh *sh, char c);
+void apends_bf(t_sh *sh, char *s);
+
 void		set_env(t_sh *shell);
 void		set_env_r(t_sh *shell);
 void		set_no_env(t_sh *sh);
@@ -118,11 +120,13 @@ void		rm_signal(void);
 //prase quo
 char *reload(t_sh *sh, char *cmd);
 char *load_var(t_sh *sh, char *cmd);
-char **check(t_sh *sh, char *cmd);
-int check_quo(int status, int *j, char *re, char c);
+int check(t_sh *sh, char *cmd);
+int check_quo(int status, char c);
 int is_tokn(char *s);
+char *load_var(t_sh *sh, char *cmd);
+char *load_wikd(t_sh *sh, char *cmd);
 
-char		*dequo(char *re);
+char		*dequo(t_sh *sh, char *cmd);
 char		*quo(t_sh *sh, char *c);
 char		**quo2(t_sh *sh, char **cs);
 char		***quo3(t_sh *sh, char ***css);

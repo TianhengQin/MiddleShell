@@ -25,6 +25,23 @@ void apend_bf(t_sh *sh, char c)
     sh->bf[sh->bf_inx] = 0;
 }
 
+void apends_bf(t_sh *sh, char *s)
+{
+    int i;
+
+    i = 0;
+    while (s[i] && s[i] != '^')
+    {
+        if (s[i] == '\22')
+            apend_bf(sh, '*');
+        else if (s[i] == '\23')
+            apend_bf(sh, '?');
+        else
+            apend_bf(sh, s[i]);
+        i++;
+    }
+}
+
 char sp2dc(char c)
 {
     if (is_in(" \t\v\f\r\n", c))
@@ -81,7 +98,7 @@ char *reload(t_sh *sh, char *cmd)
 	sh->quo = 0;
 	while (cmd[++(sh->i)])
 	{
-		sh->quo = check_quo(sh->quo, &(sh->j), 0, cmd[sh->i]);
+		sh->quo = check_quo(sh->quo, cmd[sh->i]);
 		if (sh->quo >= 10)
 			sh->quo = sh->quo - 10;
 		if (sh->quo)
