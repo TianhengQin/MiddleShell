@@ -36,7 +36,8 @@
 # include <fcntl.h>
 
 # define HERE_DOC_NAME ".here_doc_a72>7!e;wL=rouN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
-# define DC1 '\21'
+# define RS '\36'
+# define RSS "\36"
 # define BF_SZ 8192
 # define BFF_SZ 128
 
@@ -121,10 +122,11 @@ void		rm_signal(void);
 char *reload(t_sh *sh, char *cmd);
 char *load_var(t_sh *sh, char *cmd);
 int check(t_sh *sh, char *cmd);
-int check_quo(int status, char c);
+int check_quo(int status, char c, int self);
 int is_tokn(char *s);
 char *load_var(t_sh *sh, char *cmd);
 char *load_wikd(t_sh *sh, char *cmd);
+char *repls_wikd(t_sh *sh, char *cmd);
 
 char		*dequo(t_sh *sh, char *cmd);
 char		*quo(t_sh *sh, char *c);

@@ -30,11 +30,11 @@ void apends_bf(t_sh *sh, char *s)
     int i;
 
     i = 0;
-    while (s[i] && s[i] != '^')
+    while (s[i] && s[i] != RS)
     {
-        if (s[i] == '\22')
+        if (s[i] == '\24')
             apend_bf(sh, '*');
-        else if (s[i] == '\23')
+        else if (s[i] == '\21')
             apend_bf(sh, '?');
         else
             apend_bf(sh, s[i]);
@@ -45,7 +45,7 @@ void apends_bf(t_sh *sh, char *s)
 char sp2dc(char c)
 {
     if (is_in(" \t\v\f\r\n", c))
-        return ('\21');
+        return ('\36');
     return c;
 }
 
@@ -59,6 +59,8 @@ char sp2dc(char c)
 7 ||
 8 >>
 9 <<
+10 2>
+11 2>>
 */
 
 int is_tokn(char *s)
@@ -73,8 +75,12 @@ int is_tokn(char *s)
         return 7;
     else if (s[0] == '|')
         return 5;
+    else if (s[0] >= '0' && s[0] <= '9' && s[1] == '>' && s[2] == '>')
+        return 11;
     else if (s[0] == '>' && s[1] == '>')
         return 8;
+    else if (s[0] >= '0' && s[0] <= '9' && s[1] == '>')
+        return 10;
     else if (s[0] == '>')
         return 3;
     else if (s[0] == '<' && s[1] == '<')
@@ -98,26 +104,21 @@ char *reload(t_sh *sh, char *cmd)
 	sh->quo = 0;
 	while (cmd[++(sh->i)])
 	{
-		sh->quo = check_quo(sh->quo, cmd[sh->i]);
-		if (sh->quo >= 10)
-			sh->quo = sh->quo - 10;
+		sh->quo = check_quo(sh->quo, cmd[sh->i], 0);
 		if (sh->quo)
             apend_bf(sh, cmd[sh->i]);
 		else if (sh->quo == 0)
 		{
             sh->tokn = is_tokn(&cmd[sh->i]);
-            if (sh->tokn > 5)
+            if (sh->tokn)
             {
-                apend_bf(sh, '\21');
-                apend_bf(sh, cmd[(sh->i)++]);
+                apend_bf(sh, '\36');
+                if (sh->tokn > 5)
+                    apend_bf(sh, cmd[(sh->i)++]);
+                if (sh->tokn > 10)
+                    apend_bf(sh, cmd[(sh->i)++]);
                 apend_bf(sh, cmd[sh->i]);
-                apend_bf(sh, '\21');
-            }
-            else if (sh->tokn)
-            {
-                apend_bf(sh, '\21');
-                apend_bf(sh, cmd[sh->i]);
-                apend_bf(sh, '\21');
+                apend_bf(sh, '\36');
             }
             else
                 apend_bf(sh, sp2dc(cmd[sh->i]));

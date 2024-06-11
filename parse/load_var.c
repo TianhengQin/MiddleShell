@@ -2,23 +2,23 @@
 
 //status 0 normal 1 in '' 2 in ""
 
-int check_quo(int status, char c)
+int check_quo(int status, char c, int self)
 {
 	if (status == 0 && c == '"')
 	{
-		status = 12;
+		status = 2 + self;
 	}
 	else if (status == 0 && c == '\'')
 	{
-		status = 11;
+		status = 1 + self;
 	}
 	else if (status == 1 && c == '\'')
 	{
-		status = 10;
+		status = 0 + self;
 	}
 	else if (status == 2 && c == '"')
 	{
-		status = 10;
+		status = 0 + self;
 	}
 	return (status);
 }
@@ -40,6 +40,50 @@ void	apend_exit(t_sh *sh)
 	apend_bf(sh, exit + 48);
 }
 
+char	trans(char c)
+{
+	if (is_in(" \t\v\f\r\n", c))
+		return (RS);
+	if (c == '"')
+		return ('\23');
+	if (c == '\'')
+		return ('\22');
+	if (c == '(')
+		return ('\2');
+	if (c == ')')
+		return ('\3');
+	if (c == '>')
+		return ('\16');
+	if (c == '<')
+		return ('\17');
+	if (c == '|')
+		return ('\34');
+	if (c == '&')
+		return ('\35');
+	return (c);
+}
+
+char de_trans(char c)
+{
+	if (c == '\23')
+		return ('"');
+	if (c == '\22')
+		return ('\'');
+	if (c == '\2')
+		return ('(');
+	if (c == '\3')
+		return (')');
+	if (c == '\16')
+		return ('>');
+	if (c == '\17')
+		return ('<');
+	if (c == '\34')
+		return ('|');
+	if (c == '\35')
+		return ('&');
+	return (c);
+}
+
 void	apend_var(t_sh *sh, char *ev, char splt)
 {
 	int		i;
@@ -47,22 +91,10 @@ void	apend_var(t_sh *sh, char *ev, char splt)
 	i = -1;
 	while (ev[++i])
 	{
-		if (is_in(" \t\v\f\r\n", ev[i]))
-		{
-			apend_bf(sh, splt);
-		}
-		else if (ev[i] == '"')
-		{
-			apend_bf(sh, '\23');
-		}
-		else if (ev[i] == '\'')
-		{
-			apend_bf(sh, '\22');
-		}
-		else
-		{
+		if (splt == ' ')
 			apend_bf(sh, ev[i]);
-		}
+		else
+			apend_bf(sh, trans(ev[i]));
 	}
 }
 
@@ -97,9 +129,7 @@ char *load_var(t_sh *sh, char *cmd)
 	sh->quo = 0;
 	while (cmd[++(sh->i)])
 	{
-		sh->quo = check_quo(sh->quo, cmd[sh->i]);
-		if (sh->quo >= 10)
-			sh->quo = sh->quo - 10;
+		sh->quo = check_quo(sh->quo, cmd[sh->i], 0);
 		if (sh->quo == 1)
 		{
 			apend_bf(sh, cmd[sh->i]);
@@ -116,18 +146,9 @@ char *load_var(t_sh *sh, char *cmd)
 		else if (sh->quo == 0)
 		{
 			if (cmd[sh->i] == '$' && (is_apha(cmd[sh->i + 1]) || cmd[sh->i + 1] == '?'))
-				sh->i += apend_dolr(cmd + sh->i + 1, sh, '^');
+				sh->i += apend_dolr(cmd + sh->i + 1, sh, RS);
 			else
-			{
-				if (cmd[sh->i] == '\21')
-				{
-					apend_bf(sh, '^');
-				}
-				else
-				{
-					apend_bf(sh, cmd[sh->i]);
-				}
-			}
+				apend_bf(sh, cmd[sh->i]);
 		}
 	}
 	free(cmd);

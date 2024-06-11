@@ -74,30 +74,21 @@ void	run_shell(t_sh *sh)
 		sh->cmd = sdup(sh->bf);
 		if (!(sh->cmd))
 			free_sh(sh, 2);
+		// printf("exit: %lld\n", sh->exit_c);
 		sh->cmd = load_var(sh, sh->cmd);
 		if (!sh->cmd)
 			free_sh(sh, 2);
-		printf("%s\n", sh->cmd);
-		sh->cmd  = dequo(sh, sh->cmd);
+		// printf("%s\n", sh->cmd);
+		sh->cmd  = repls_wikd(sh, sh->cmd);
 		if (!sh->cmd)
 			free_sh(sh, 2);
-		if (!sh->cmd[0])
-		{
-			free(sh->cmd);
-			continue ;
-		}
-		printf("%s\n", sh->cmd);
+		// printf("%s\n", sh->cmd);
 		sh->cmd  = load_wikd(sh, sh->cmd);
 		if (!sh->cmd)
 			free_sh(sh, 2);
-		if (!sh->cmd[0])
-		{
-			free(sh->cmd);
-			continue ;
-		}
-		printf("-%s-\n", sh->cmd);
+		// printf("[%s]\n\n", sh->cmd);
+        exe_all(sh, sh->cmd);
 		free(sh->cmd);
-        // exe_all(sh, sh->cmd);
 	}
 	printf("\n[Process completed]\n\n");
 }
