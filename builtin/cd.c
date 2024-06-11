@@ -50,6 +50,7 @@ int	go_to(t_sh *sh, char *cs)
 		sh->exit_c = 1;
 		return (1);
 	}
+	sh->exit_c = 0;
 	set_pwd(sh);
 	free(dir);
 	return (0);
@@ -59,17 +60,15 @@ void	run_cd(t_sh *sh, char **cs)
 {
 	char	*tmp;
 
-	if (cs[1] && cs[2])
-	{
-		fprint(2, "cd: string not in pwd: %s\n", cs[1]);
-		sh->exit_c = 1;
-		return ;
-	}
+	// if (cs[1] && cs[2])
+	// {
+	// 	fprint(2, "cd: string not in pwd: %s\n", cs[1]);
+	// 	sh->exit_c = 1;
+	// 	return ;
+	// }
 	tmp = sdup(sh->pwd);
-	if (!cs[1] || !cs[1][0])
-	{
+	if (!cs[1])
 		go_to(sh, sh->home);
-	}
 	else
 	{
 		if (go_to(sh, cs[1]))

@@ -42,8 +42,8 @@ void	run_unset(t_sh *sh, char **cs)
 	sh->exit_c = 0;
 	if (!cs[1])
 	{
-		fprint(2, "unset: not enough arguments\n");
-		sh->exit_c = 1;
+		// fprint(2, "unset: not enough arguments\n");
+		sh->exit_c = 0;
 		return ;
 	}
 	j = 0;

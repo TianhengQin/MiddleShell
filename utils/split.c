@@ -14,7 +14,7 @@
 
 static size_t	skip_quo(char *dup, size_t i)
 {
-	if (dup[i] == 39)
+	if (dup[i] == (39))
 	{
 		i++;
 		while (dup[i] && dup[i] != 39)
@@ -26,10 +26,10 @@ static size_t	skip_quo(char *dup, size_t i)
 		while (dup[i] && dup[i] != 34)
 			i++;
 	}
-	else if (dup[i] == -1)
+	else if (dup[i] == '(')
 	{
 		i++;
-		while (dup[i] && dup[i] != -1)
+		while (dup[i] && dup[i] != ')')
 			i++;
 	}
 	if (dup[i])
@@ -51,7 +51,7 @@ static size_t	cut(char *dup, char *set)
 		count++;
 	while (dup[i])
 	{
-		if (dup[i] == 39 || dup[i] == 34)
+		if (dup[i] == 39 || dup[i] == 34 || dup[i] == '(')
 			i = skip_quo(dup, i);
 		if (is_in(set, dup[i]))
 		{
@@ -103,7 +103,7 @@ static void	free_re(char **re, int tot)
 	free(re);
 }
 
-char	**ft_split(char const *s, char *c)
+char	**split(char const *s, char *c)
 {
 	char		*dup;
 	char		**re;

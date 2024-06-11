@@ -1,7 +1,7 @@
 
 #include "shell.h"
 
-void trm_prthsp(char *s)
+void trm_prth(char *s)
 {
     int		i;
     int     j;
@@ -23,22 +23,50 @@ void trm_prthsp(char *s)
     }
 }
 
+int run_one(t_sh *sh, char **cs)
+{
+    sde_trans2(cs);
+    // printf("runone\n");
+    if (!cs[0])
+        return (sh->exit_c);
+	if (sncmp(cs[0], "cd", 3) == 0)
+		run_cd(sh, cs);
+	else if (sncmp(cs[0], "echo", 5) == 0)
+		run_echo(sh, cs);
+	else if (sncmp(cs[0], "pwd", 4) == 0)
+		run_pwd(sh, cs);
+	else if (sncmp(cs[0], "export", 7) == 0)
+		run_export(sh, cs);
+	else if (sncmp(cs[0], "unset", 6) == 0)
+		run_unset(sh, cs);
+	else if (sncmp(cs[0], "env", 4) == 0)
+		run_env(sh, cs);
+	else if (sncmp(cs[0], "exit", 5) == 0)
+		run_exit(sh, cs);
+	else
+		printf("run fork %s\n", cs[0]);
+	return(sh->exit_c);
+}
+
 int exe_one(t_sh *sh, char *cmd) {
 
     (void)sh;
 
-    char **cmds = ft_split(cmd, "|");
+    char **cmds = split(cmd, "|");
     int i = -1;
-    if (cmds[0] == 0)
-        printf("[]\n");
     if (cmds[1] == 0)
     {
-        char **cmdss = ft_split(cmds[0], RSS);
-        while (cmdss[++i])
-        {
-            printf("[%s]", cmdss[i]);
-        }
-        printf("\n");
+        char **cmdss = split(cmds[0], RSS);
+        sh->exit_c = run_one(sh, cmdss);
+        // if (!cmdss[0])
+        // {
+        //     printf("[]");
+        // }
+        // while (cmdss[++i])
+        // {
+        //     printf("[%s]", cmdss[i]);
+        // }
+        // printf("\n");
         free2(cmdss);
     }
     else
@@ -50,11 +78,11 @@ int exe_one(t_sh *sh, char *cmd) {
     }
     free2(cmds);
     free(cmd);
-    return 0;
+    return (sh->exit_c);
 }
 
-int exe_and(t_sh *sh, char *cmd1, char *cmd2) {
-    (void)sh;
+int exe_and(t_sh *sh, char *cmd1, char *cmd2)
+{
     sh->exit_c = exe_all(sh, cmd1);
     free(cmd1);
     if (sh->exit_c)
@@ -67,22 +95,24 @@ int exe_and(t_sh *sh, char *cmd1, char *cmd2) {
     return (sh->exit_c);
 }
 
-int exe_or(t_sh *sh, char *cmd1, char *cmd2) {
-    (void)sh;
+int exe_or(t_sh *sh, char *cmd1, char *cmd2)
+{
     sh->exit_c = exe_all(sh, cmd1);
-    // if (!sh->exit_c)
-    // {
-    //     return (0);
-    // }
+    if (!sh->exit_c)
+    {
+        return (0);
+    }
     sh->exit_c = exe_all(sh, cmd2);
     free(cmd1);
     free(cmd2);
     return (sh->exit_c);
 }
 
-int split_token(char *cmd) {
+int split_token(char *cmd)
+{
     int i = 0;
-    while (cmd[i] && cmd[++i]) {
+    while (cmd[i] && cmd[++i])
+    {
         if (cmd[i - 1] == '\'')
         {
             ++i;
@@ -131,7 +161,7 @@ int exe_all(t_sh *sh, char *cmd) {
         sh->exit_c = exe_or(sh, sdup(cmd), sdup(cmd + find / 10 + 1));
     else
     {
-        trm_prthsp(cmd);
+        trm_prth(cmd);
         sh->exit_c = exe_one(sh, sdup(cmd));
     }
     return (sh->exit_c);

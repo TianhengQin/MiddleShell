@@ -91,6 +91,7 @@ int		len(const char *str);
 int		len2(char **str);
 int		len3(char ***css);
 char		**ft_split(char const *s, char *c);
+char	**split(char const *s, char *c);
 char		*sdup(const char *src);
 char		*sdupf(const char *src);
 int			sncmp(const char *s1, const char *s2, int n);
@@ -128,7 +129,10 @@ char *load_var(t_sh *sh, char *cmd);
 char *load_wikd(t_sh *sh, char *cmd);
 char *repls_wikd(t_sh *sh, char *cmd);
 
-char		*dequo(t_sh *sh, char *cmd);
+
+void sde_trans2(char **cs);
+void dequo(char *c);
+
 char		*quo(t_sh *sh, char *c);
 char		**quo2(t_sh *sh, char **cs);
 char		***quo3(t_sh *sh, char ***css);

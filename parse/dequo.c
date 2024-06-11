@@ -109,3 +109,23 @@ char *repls_wikd(t_sh *sh, char *cmd)
 //     free(cmd);
 //     return (sdup(sh->bf));
 // }
+
+void dequo(char *c)
+{
+    int i;
+    int j;
+    int quo;
+
+    i = -1;
+    j = 0;
+    quo = 0;
+    while (c[++i])
+    {
+        quo = check_quo(quo, c[i], 10);
+        if (quo >= 10)
+            quo = quo - 10;
+        else
+            c[j++] = c[i];
+    }
+    c[j] = 0;
+}

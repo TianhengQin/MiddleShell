@@ -69,7 +69,7 @@ int check(t_sh *sh, char *cmd)
         tokn = mrge_tokn(is_tokn(cmds[i]));
         if (val_tokn(tokn, sh->tokn, sh))
         {
-            fprint(2, "\nminish: parse error near `%s'\n", cmds[i]);
+            fprint(2, "minish: parse error near `%s'\n", cmds[i]);
             sh->exit_c = 258;
             free2(cmds);
             return (0);
@@ -78,7 +78,7 @@ int check(t_sh *sh, char *cmd)
     }
     if (sh->lp > sh->rp || tokn > 2)
     {
-        fprint(2, "\nminish: parse error near `\\n'\n");
+        fprint(2, "minish: parse error near `\\n'\n");
         free2(cmds);
         sh->exit_c = 258;
         return (0);

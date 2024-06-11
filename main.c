@@ -52,7 +52,9 @@ void	run_shell(t_sh *sh)
     sh->runing = 1;
 	while (sh->runing)
 	{
+		// printf("exit: %lld\n", sh->exit_c);
 		p = get_prompt(sh);
+		// printf("%s",p);
 		sh->cmd = readline(p);
 		free(p);
 		if (!sh->cmd)
@@ -88,16 +90,18 @@ void	run_shell(t_sh *sh)
 			free_sh(sh, 2);
 		// printf("[%s]\n\n", sh->cmd);
         exe_all(sh, sh->cmd);
+		// printf("exit: %lld\n", sh->exit_c);
+		// fprint(1, "a\n");
 		free(sh->cmd);
 	}
-	printf("\n[Process completed]\n\n");
+	// printf("\n[Process completed]\n\n");
 }
 
 int	all(char **env)
 {
 	t_sh	sh;
 
-	sh.exit_c = 123;
+	sh.exit_c = 0;
 	sh.env = env;
 	sh.bf = malloc(BF_SZ + 1);
 	sh.bf[0] = 0;
@@ -115,7 +119,6 @@ int	all(char **env)
 		set_no_env(&sh);
 	run_shell(&sh);
 	free_sh(&sh, 0);
-    sh.exit_c = 0;
 	return (sh.exit_c);
 }
 

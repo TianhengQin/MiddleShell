@@ -84,6 +84,31 @@ char de_trans(char c)
 	return (c);
 }
 
+void sde_trans(char *c)
+{
+	int i;
+
+	dequo(c);
+	i = 0;
+	while (c[i])
+	{
+		c[i] = de_trans(c[i]);
+		i++;
+	}
+}
+
+void sde_trans2(char **cs)
+{
+	int i;
+
+	i = 0;
+	while (cs[i])
+	{
+		sde_trans(cs[i]);
+		i++;
+	}
+}
+
 void	apend_var(t_sh *sh, char *ev, char splt)
 {
 	int		i;
