@@ -54,8 +54,9 @@ void	run_shell(t_sh *sh)
 	{
 		// printf("exit: %lld\n", sh->exit_c);
 		p = get_prompt(sh);
-		// printf("%s",p);
-		sh->cmd = readline(p);
+		fprint(1, "%s\n",p);
+		sh->cmd = readline(NULL);
+		// sh->cmd = read_line(sh);
 		free(p);
 		if (!sh->cmd)
 			break ;
@@ -92,7 +93,6 @@ void	run_shell(t_sh *sh)
         exe_all(sh, sh->cmd);
 		// printf("exit: %lld\n", sh->exit_c);
 		// fprint(1, "a\n");
-		free(sh->cmd);
 	}
 	// printf("\n[Process completed]\n\n");
 }

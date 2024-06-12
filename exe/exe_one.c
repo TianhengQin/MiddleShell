@@ -1,11 +1,13 @@
 
 #include "shell.h"
 
-void trm_prth(char *s)
+int trm_prth(char *s)
 {
     int		i;
     int     j;
+    int     re;
 
+    re = 0;
 	i = len(s) - 1;
 	while (i >= 0 && s[i] == RS)
 		i--;
@@ -14,6 +16,7 @@ void trm_prth(char *s)
 		j++;
     while (s[i] == ')' && s[j] == '(' && i > j)
     {
+        re = 1;
         s[i--] = RS;
         s[j++] = RS;
         while (i >= 0 && s[i] == RS)
@@ -21,6 +24,7 @@ void trm_prth(char *s)
         while (s[j] && s[j] == RS)
 		    j++;
     }
+    return (re);
 }
 
 int run_one(t_sh *sh, char **cs)
@@ -44,14 +48,16 @@ int run_one(t_sh *sh, char **cs)
 	else if (sncmp(cs[0], "exit", 5) == 0)
 		run_exit(sh, cs);
 	else
+    {
+        sh->exit_c = 0;
 		printf("run fork %s\n", cs[0]);
+    }
 	return(sh->exit_c);
 }
 
 int exe_one(t_sh *sh, char *cmd) {
 
-    (void)sh;
-
+    // printf("--- one: %s\n",cmd);
     char **cmds = split(cmd, "|");
     int i = -1;
     if (cmds[1] == 0)
@@ -73,7 +79,7 @@ int exe_one(t_sh *sh, char *cmd) {
     {
         while (cmds[++i])
         {
-            exe_all(sh, cmds[i]);
+            exe_all(sh, sdup(cmds[i]));
         }
     }
     free2(cmds);
@@ -83,26 +89,27 @@ int exe_one(t_sh *sh, char *cmd) {
 
 int exe_and(t_sh *sh, char *cmd1, char *cmd2)
 {
-    sh->exit_c = exe_all(sh, cmd1);
+    // printf("--- and: %s --- %s\n",cmd1, cmd2);
+    sh->exit_c = exe_all(sh, sdup(cmd1));
     free(cmd1);
     if (sh->exit_c)
     {
         free(cmd2);
         return (sh->exit_c);
     }
-    sh->exit_c = exe_all(sh, cmd2);
+    sh->exit_c = exe_all(sh, sdup(cmd2));
     free(cmd2);
     return (sh->exit_c);
 }
 
 int exe_or(t_sh *sh, char *cmd1, char *cmd2)
 {
-    sh->exit_c = exe_all(sh, cmd1);
+    sh->exit_c = exe_all(sh, sdup(cmd1));
     if (!sh->exit_c)
     {
         return (0);
     }
-    sh->exit_c = exe_all(sh, cmd2);
+    sh->exit_c = exe_all(sh, sdup(cmd2));
     free(cmd1);
     free(cmd2);
     return (sh->exit_c);
@@ -148,11 +155,9 @@ int split_token(char *cmd)
 
 int exe_all(t_sh *sh, char *cmd) {
 
-
-    (void)sh;
-
     int find;
     // printf("after trm: %s\n",cmd);
+    // printf("--- all: %s\n",cmd);
     find = split_token(cmd);
 
     if (find % 10 == 1)
@@ -161,8 +166,11 @@ int exe_all(t_sh *sh, char *cmd) {
         sh->exit_c = exe_or(sh, sdup(cmd), sdup(cmd + find / 10 + 1));
     else
     {
-        trm_prth(cmd);
-        sh->exit_c = exe_one(sh, sdup(cmd));
+        if (trm_prth(cmd))
+            sh->exit_c = exe_all(sh, sdup(cmd));
+        else
+            sh->exit_c = exe_one(sh, sdup(cmd));
     }
+    free(cmd);
     return (sh->exit_c);
 }

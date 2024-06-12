@@ -82,6 +82,8 @@ typedef struct s_sh
 }	t_sh;
 
 //utils
+char *read_line(t_sh *sh);
+
 int			fprint(int fd, const char *s, ...);
 char		*sjoin(char const *s1, char const *s2);
 char		*sjoinf1(char const *s1, char const *s2);

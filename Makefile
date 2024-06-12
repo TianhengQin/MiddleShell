@@ -12,7 +12,7 @@ EXE		= exe_and exe_one exe_or exe_pipe
 
 # SPLT	= splitcmd eachcmd
 
-UTIL	= free ft_printf ft_split strjoin strjoin2 sutils sutils1 utils split
+UTIL	= free ft_printf ft_split strjoin strjoin2 sutils sutils1 utils split readline
 
 INIT	= set setnoenv
 
