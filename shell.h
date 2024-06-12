@@ -5,18 +5,6 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tiqin <tiqin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/11 00:10:30 by tiqin             #+#    #+#             */
-/*   Updated: 2023/11/18 10:46:25 by tiqin            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   shell.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tiqin <tiqin@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 03:31:59 by tiqin             #+#    #+#             */
 /*   Updated: 2023/11/10 12:29:53 by tiqin            ###   ########.fr       */
 /*                                                                            */
@@ -36,7 +24,7 @@
 # include <fcntl.h>
 
 # define HERE_DOC ".here_doc_a72>7!e;wL=roaso(7uN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
-# define HISTORY ".midsh_history_a72>7!e;wL=roaso(7uN]>uO46#bI1aZX<tkCl8CPR.txt"
+# define HISTORY ".midsh_history_a72>7!e;wL=roasfaso(7uN]>uO46#bI1aZX<tkCl8CPR.txt"
 # define RS '\36'
 # define RSS "\36"
 # define BF_SZ 8192
@@ -84,6 +72,7 @@ typedef struct s_sh
 }	t_sh;
 
 //utils
+char *read_line(t_sh *sh, int fd);
 
 int			fprint(int fd, const char *s, ...);
 char		*sjoin(char const *s1, char const *s2);
@@ -132,7 +121,7 @@ char *load_var(t_sh *sh, char *cmd);
 char *load_wikd(t_sh *sh, char *cmd);
 char *repls_wikd(t_sh *sh, char *cmd);
 
-
+char	trans(char c);
 void sde_trans2(char **cs);
 void dequo(char *c);
 

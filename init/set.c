@@ -46,6 +46,7 @@ void	init_env(t_sh *sh)
 	while (sh->env[++i])
 		re[i] = sdup(sh->env[i]);
 	sh->env = re;
+	set_pwd(sh);
 }
 
 void	set_env(t_sh *shell)
@@ -53,19 +54,31 @@ void	set_env(t_sh *shell)
 	int		i;
 
 	init_env(shell);
-	i = find_var(shell->env, "PWD=");
-	shell->pwd = sdup(shell->env[i] + 4);
 	i = find_var(shell->env, "OLDPWD=");
 	if (i >= 0)
 		shell->odpwd = sdup(shell->env[i] + 7);
 	else
-		shell->odpwd = sdup(shell->env[find_var(shell->env, "PWD=")] + 4);
-	shell->user = sdup(shell->env[find_var(shell->env, "USER=")] + 5);
-	shell->home = sdup(shell->env[find_var(shell->env, "HOME=")] + 5);
-	shell->evpth = ft_split(shell->env[find_var(shell->env, "PATH=")] + 5, ":");
+		shell->odpwd = sdup(shell->pwd);
+	i = find_var(shell->env, "USER=");
+	if (i >= 0)
+		shell->user = sdup(shell->env[i] + 5);
+	else
+		shell->user = sdup("(x л x)");
+	i = find_var(shell->env, "HOME=");
+	if (i >= 0)
+		shell->home = sdup(shell->env[i] + 5);
+	else
+		shell->home = sdup("");
+	i = find_var(shell->env, "PATH=");
+	if (i >= 0)
+		shell->evpth = ft_split(shell->env[find_var(shell->env, "PATH=")] + 5, ":");
+	else
+		shell->evpth = 0;
 	shell->runing = 1;
 	if (find_var(shell->env, "SHLVL=") >= 0)
 		shell->env[find_var(shell->env, "SHLVL=")][6]++;
+	else
+		env_append(shell, "SHLVL=1");
 	shell->exit_c = 0;
 	shell->stdi = -1;
 	shell->stdo = -1;

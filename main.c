@@ -45,6 +45,19 @@ void	rcv_sig(t_sh *shell)
 	g_s = 0;
 }
 
+void	save_history(char *cmd)
+{
+	int his;
+
+	add_history(cmd);
+	his = open(HISTORY, O_WRONLY | O_APPEND);
+	if (his < 0)
+		return ;
+	write(his, cmd, len(cmd));
+	write(his, "\n", 1);
+	close(his);
+}
+
 void	run_shell(t_sh *sh)
 {
 	char	*p;
@@ -66,7 +79,7 @@ void	run_shell(t_sh *sh)
 			sh->cmd = 0;
             continue;
 		}
-		add_history(sh->cmd);
+		save_history(sh->cmd);
 		if (!check(sh, sh->cmd))
 		{
 			free(sh->cmd);
@@ -97,6 +110,29 @@ void	run_shell(t_sh *sh)
 	// printf("\n[Process completed]\n\n");
 }
 
+void load_history(t_sh *sh)
+{
+	int his;
+	char *cmd;
+
+	his = open(HISTORY, O_CREAT | O_WRONLY | O_APPEND, S_IRUSR | S_IWUSR);
+	if (his < 0)
+		return ;
+	close(his);
+	his = open(HISTORY, O_RDONLY);
+	if (his < 0)
+		return ;
+	cmd = read_line(sh, his);
+	while (cmd)
+	{
+		add_history(cmd);
+		free(cmd);
+		cmd = read_line(sh, his);
+		// printf("read %s\n", cmd);
+	}
+	close(his);
+}
+
 int	all(char **env)
 {
 	t_sh	sh;
@@ -109,6 +145,8 @@ int	all(char **env)
 	sh.bf_inx = 0;
 	if (!sh.bf)
 		free_sh(&sh, 2);
+	load_history(&sh);
+	init_bf(&sh);
 	if (env[0])
 		set_env(&sh);
 	else
