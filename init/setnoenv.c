@@ -18,7 +18,7 @@ void	set_no_env(t_sh *sh)
 	set_pwd(sh);
 	sh->env = malloc(4 * sizeof(char *));
 	if (!sh->env)
-		return ;
+		free_sh(sh, 2);
 	sh->user = sdup("(x л x)");
 	sh->home = sdup("");
 	sh->evpth = 0;

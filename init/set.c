@@ -109,6 +109,8 @@ void	set_envpth(t_sh *sh)
 	if (find_var(sh->env, "PATH=") >= 0)
 	{
 		sh->evpth = ft_split(sh->env[find_var(sh->env, "PATH=")] + 5, ":");
+		if (!sh->evpth)
+			free_sh(sh, 2);
 	}
 	else
 		sh->evpth = 0;

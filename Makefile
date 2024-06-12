@@ -1,6 +1,6 @@
 BUIN	= cd echo env exit export export1 pwd unset
 
-EXE		= exe_and exe_one exe_or exe_pipe
+EXE		= exe_all exe_and exe_one exe_or exe_pipe
 
 # RDIR	= io resetio heredoc
 
@@ -12,7 +12,7 @@ EXE		= exe_and exe_one exe_or exe_pipe
 
 # SPLT	= splitcmd eachcmd
 
-UTIL	= free ft_printf ft_split strjoin strjoin2 sutils sutils1 utils split readline
+UTIL	= free ft_printf ft_split strjoin strjoin2 sutils sutils1 utils split
 
 INIT	= set setnoenv
 

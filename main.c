@@ -107,11 +107,7 @@ int	all(char **env)
 	sh.bf[0] = 0;
 	sh.bf_sz = BF_SZ;
 	sh.bf_inx = 0;
-	sh.bff = malloc(sizeof(char *) * (BFF_SZ + 1));
-	sh.bff[0] = 0;
-	sh.bff_sz = BFF_SZ;
-	sh.bff_inx = 0;
-	if (!sh.bf || !sh.bff)
+	if (!sh.bf)
 		free_sh(&sh, 2);
 	if (env[0])
 		set_env(&sh);

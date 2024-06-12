@@ -35,11 +35,11 @@
 # include <termios.h>
 # include <fcntl.h>
 
-# define HERE_DOC_NAME ".here_doc_a72>7!e;wL=rouN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
+# define HERE_DOC ".here_doc_a72>7!e;wL=roaso(7uN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
+# define HISTORY ".midsh_history_a72>7!e;wL=roaso(7uN]>uO46#bI1aZX<tkCl8CPR.txt"
 # define RS '\36'
 # define RSS "\36"
 # define BF_SZ 8192
-# define BFF_SZ 128
 
 long long	g_s;
 
@@ -58,6 +58,8 @@ typedef struct s_sh
 	char		***iof;
 	int			stdi;
 	int			stdo;
+	int			ifd;
+	int			ofd;
 	long long	exit_c;
 	int			pidf;
 	int			prs;
@@ -82,7 +84,6 @@ typedef struct s_sh
 }	t_sh;
 
 //utils
-char *read_line(t_sh *sh);
 
 int			fprint(int fd, const char *s, ...);
 char		*sjoin(char const *s1, char const *s2);
@@ -155,9 +156,14 @@ char		***splt3(char ***css);
 int			ck_start(char *cmd);
 //exe
 int exe_all(t_sh *sh, char *cmd);
+int exe_and(t_sh *sh, char *cmd1, char *cmd2);
+int exe_one(t_sh *sh, char *cmd);
+int exe_or(t_sh *sh, char *cmd1, char *cmd2);
+int exe_pip(t_sh *sh, char **cs);
+
 void		exe_cmd(t_sh *sh, char **cs);
 // void		exe_all(t_sh *sh, char ***css);
-void		exe_pip(t_sh *sh, char ***css);
+// int		exe_pip(t_sh *sh, char ***css);
 char		*get_pth(char *pwd, char **evpth, char *cs);
 //buildin
 void		run_echo(t_sh *sh, char **cs);

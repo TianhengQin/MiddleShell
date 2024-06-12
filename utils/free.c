@@ -50,10 +50,9 @@ char	*free_sh(t_sh *sh, int if_exit)
 	free1(sh->pwd);
 	free1(sh->user);
 	free1(sh->home);
-	free2(sh->bff);
 	free1(sh->bf);
 	if (if_exit == 2)
-		perror("midsh: ");
+		perror("midsh");
 	if (if_exit)
 		exit(sh->exit_c);
 	return (0);
@@ -61,7 +60,7 @@ char	*free_sh(t_sh *sh, int if_exit)
 
 void	free_cmd(char *cmd, char ***css, t_sh *sh)
 {
-	unlink(HERE_DOC_NAME);
+	unlink(HERE_DOC);
 	free(cmd);
 	free3(css);
 	free3(sh->iof);
