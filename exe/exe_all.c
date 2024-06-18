@@ -65,7 +65,7 @@ int trm_prth(char *s)
     return (re);
 }
 
-int exe_all(t_sh *sh, char *cmd)
+int exe_all(t_sh *sh, char *cmd, int fork)
 {
 
     int find;
@@ -78,11 +78,10 @@ int exe_all(t_sh *sh, char *cmd)
         sh->exit_c = exe_or(sh, sdup(cmd), sdup(cmd + find / 10 + 1));
     else
     {
-        if (trm_prth(cmd))
-            sh->exit_c = exe_all(sh, sdup(cmd));
-        else
-            sh->exit_c = exe_one(sh, sdup(cmd));
+        sh->exit_c = exe_one(sh, sdup(cmd), fork);
     }
     free(cmd);
+    if (fork)
+        exit(sh->exit_c);
     return (sh->exit_c);
 }

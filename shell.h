@@ -144,11 +144,13 @@ char		***splt3(char ***css);
 // int			check(char *s, char ***css, t_sh *sh);
 int			ck_start(char *cmd);
 //exe
-int exe_all(t_sh *sh, char *cmd);
+int exe_all(t_sh *sh, char *cmd, int fork);
 int exe_and(t_sh *sh, char *cmd1, char *cmd2);
-int exe_one(t_sh *sh, char *cmd);
+int exe_one(t_sh *sh, char *cmd, int fork);
 int exe_or(t_sh *sh, char *cmd1, char *cmd2);
 int exe_pip(t_sh *sh, char **cs);
+int run_one(t_sh *sh, char **cs, int fork);
+int trm_prth(char *s);
 
 void		exe_cmd(t_sh *sh, char **cs);
 // void		exe_all(t_sh *sh, char ***css);

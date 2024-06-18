@@ -91,19 +91,27 @@ void	run_shell(t_sh *sh)
 		if (!(sh->cmd))
 			free_sh(sh, 2);
 		// printf("exit: %lld\n", sh->exit_c);
-		sh->cmd = load_var(sh, sh->cmd);
-		if (!sh->cmd)
-			free_sh(sh, 2);
+
+
+		// sh->cmd = load_var(sh, sh->cmd);
+		// if (!sh->cmd)
+		// 	free_sh(sh, 2);
+
+		
 		// printf("%s\n", sh->cmd);
-		sh->cmd  = repls_wikd(sh, sh->cmd);
-		if (!sh->cmd)
-			free_sh(sh, 2);
+
+		// sh->cmd  = repls_wikd(sh, sh->cmd);
+		// if (!sh->cmd)
+		// 	free_sh(sh, 2);
+		
 		// printf("%s\n", sh->cmd);
-		sh->cmd  = load_wikd(sh, sh->cmd);
-		if (!sh->cmd)
-			free_sh(sh, 2);
+	
+		// sh->cmd  = load_wikd(sh, sh->cmd);
+		// if (!sh->cmd)
+		// 	free_sh(sh, 2);
+	
 		// printf("[%s]\n\n", sh->cmd);
-        exe_all(sh, sh->cmd);
+        exe_all(sh, sh->cmd, 0);
 		// printf("exit: %lld\n", sh->exit_c);
 		// fprint(1, "a\n");
 	}

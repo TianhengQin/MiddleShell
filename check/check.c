@@ -34,7 +34,7 @@ int val_tokn(int tokn, int prev, t_sh *sh)
         return 1;
     if (tokn == 0 && prev == 2)
         return 1;
-    if (tokn == 1 && (prev == 0 || (prev > 1 && prev < 6) || prev > 7))
+    if (tokn == 1 && (prev == 0 || (prev > 1 && prev < 5) || prev > 7))
         return 1;
     if (tokn == 2 && (prev == -1 || prev == 1 || prev > 2))
         return 1;

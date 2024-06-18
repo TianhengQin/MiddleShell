@@ -102,6 +102,7 @@ char *reload(t_sh *sh, char *cmd)
 	sh->i = -1;
 	sh->j = 0;
 	sh->quo = 0;
+    apend_bf(sh, RS);
 	while (cmd[++(sh->i)])
 	{
 		sh->quo = check_quo(sh->quo, cmd[sh->i], 0);
@@ -124,5 +125,6 @@ char *reload(t_sh *sh, char *cmd)
                 apend_bf(sh, sp2dc(cmd[sh->i]));
 		}
 	}
+    apend_bf(sh, RS);
     return 0;
 }
