@@ -1,4 +1,4 @@
-minishell
+minishell*
 *.o
 .vscode
 .DS_*
