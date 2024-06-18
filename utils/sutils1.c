@@ -53,3 +53,26 @@ char	*trm_sp(char *s)
 	free(s);
 	return (re);
 }
+
+char	*sdupr(const char *src)
+{
+	char	*dup;
+	int	i;
+
+	i = 0;
+	while (src[i] && src[i] != RS)
+	{
+		i++;
+	}
+	dup = (char *)malloc(i + 1);
+	if (!dup)
+		return (0);
+	i = 0;
+	while (src[i] && src[i] != RS)
+	{
+		dup[i] = src[i];
+		i++;
+	}
+	dup[i] = 0;
+	return (dup);
+}

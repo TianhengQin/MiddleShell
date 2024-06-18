@@ -86,6 +86,7 @@ char		**ft_split(char const *s, char *c);
 char	**split(char const *s, char *c);
 char		*sdup(const char *src);
 char		*sdupf(const char *src);
+char	*sdupr(const char *src);
 int			sncmp(const char *s1, const char *s2, int n);
 long long	ati(const char *str);
 int			is_aphnum(char c);
@@ -122,6 +123,7 @@ char *load_wikd(t_sh *sh, char *cmd);
 char *repls_wikd(t_sh *sh, char *cmd);
 
 char	trans(char c);
+void sde_trans(char *c);
 void sde_trans2(char **cs);
 void dequo(char *c);
 
@@ -169,7 +171,7 @@ int			valid_exp(char *s);
 void		run_unset(t_sh *sh, char **cs);
 void		run_exit(t_sh *sh, char **cs);
 //redir
-void		redir(t_sh *sh, char **io);
+int		redir(t_sh *sh, char *cmd);
 void		hir_doc(t_sh *sh, char *lmt, char m);
 void		crt_hirdoc(t_sh *sh);
 void		send_line(char *cs, int fd);

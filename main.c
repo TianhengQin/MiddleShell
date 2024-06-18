@@ -111,7 +111,11 @@ void	run_shell(t_sh *sh)
 		// 	free_sh(sh, 2);
 	
 		// printf("[%s]\n\n", sh->cmd);
+		sh->stdi = dup(0);
+		sh->stdo = dup(1);
         exe_all(sh, sh->cmd, 0);
+		dup2(sh->stdi, 0);
+		dup2(sh->stdo, 1);
 		// printf("exit: %lld\n", sh->exit_c);
 		// fprint(1, "a\n");
 	}

@@ -23,6 +23,19 @@ char	*rltv_pth(char *pwd, char *cs)
 	return (0);
 }
 
+int	is_pth(char *cs)
+{
+	int i = 0;
+
+	while (cs[i])
+	{
+		if (cs[i] == '/')
+			return 1;
+		i++;
+	}
+	return 0;
+}
+
 char	*get_pth(char *pwd, char **evpth, char *cs)
 {
 	char	*right_path;
@@ -30,7 +43,7 @@ char	*get_pth(char *pwd, char **evpth, char *cs)
 	int		i;
 
 	right_path = 0;
-	if (access(cs, F_OK | X_OK) == 0)
+	if (access(cs, F_OK) == 0 && is_pth(cs))
 		return (sdup(cs));
 	if (cs[0] == '.')
 		return (rltv_pth(pwd, cs));
@@ -43,7 +56,7 @@ char	*get_pth(char *pwd, char **evpth, char *cs)
 		right_path = sjoin(evpth[i], cmd);
         if (!right_path)
             return (0);
-		if (access(right_path, F_OK | X_OK) == 0)
+		if (access(right_path, F_OK) == 0)
 			break ;
 		free(right_path);
 		right_path = 0;
@@ -134,6 +147,106 @@ int run_one(t_sh *sh, char **cs, int fork)
 	return(sh->exit_c);
 }
 
+int openfile(t_sh *sh, int tokn, char *file)
+{
+	(void)sh;
+	char *fnam = sdupr(file);
+	// fprint(2, "file name %s\n", fnam);
+	fnam = load_var(sh, fnam);
+	fnam = repls_wikd(sh, fnam);
+	fnam = load_wikd(sh, fnam);
+	sde_trans(fnam);
+	char **fnams = ft_split(fnam, RSS);
+	if (fnams[1] || !fnams[0])
+	{
+		fprint(2, "ambigus dir\n");
+		free2(fnams);
+		free(fnam);
+		return (1);
+	}
+	free(fnam);
+	fnam = sdup(fnams[0]);
+	free2(fnams);
+	// fprint(2, "file name %s\n", fnam);
+	int fd = 0;
+	if (tokn == 3)
+		fd = open(fnam, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	else if (tokn == 4)
+		fd = open(fnam, O_RDONLY);
+	else if (tokn == 8)
+		fd = open(fnam, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	if (fd < 0)
+	{
+		free(fnam);
+		perror("midsh");
+		return (1);
+	}
+	if (tokn == 3 || tokn == 8)
+	{
+		dup2(fd, 1);
+		close(fd);
+	}
+	else
+	{
+		dup2(fd, 0);
+		close(fd);
+	}
+	free(fnam);
+	return (0);
+}
+
+int redir(t_sh *sh, char *cmd)
+{
+
+	int i = 0;
+	int tokn = 0;
+	int j = 0;
+	while (cmd[i])
+	{
+		// fprint(2, "idx %d\n", i);
+		if (cmd[i] == '(')
+		{
+			while (cmd[i] != ')')
+				i++;
+			continue;
+		}
+		if ((i == 0 || cmd[i - 1] == RS) && cmd[i] != RS)
+		{
+			tokn = is_tokn(&cmd[i]);
+			// fprint(2, "is %d\n", tokn);
+			if (tokn == 3 || tokn == 4 || tokn > 7)
+			{
+				j = 0;
+				while (cmd[i + j] != RS)
+					j++;
+				while (cmd[i + j] == RS)
+					j++;
+				if (openfile(sh, tokn, &cmd[i + j]))
+					return 1;
+				while (j)
+				{
+					cmd[i] = RS;
+					i++;
+					j--;
+				}
+				while (cmd[i] != RS)
+					cmd[i++] = RS;
+			}
+			else
+			{
+				// fprint(2, "not tokn %d\n", i);
+
+				i++;
+				// fprint(2, "not tokn %d\n", i);
+
+			}
+		}
+		else
+			i++;
+	}
+	return (0);
+}
+
 int exe_one(t_sh *sh, char *cmd, int fork)
 {
 
@@ -150,6 +263,8 @@ int exe_one(t_sh *sh, char *cmd, int fork)
 		}
         else
 		{
+			if (redir(sh, cmds[0]))
+				return (1);
 			cmds[0] = load_var(sh, cmds[0]);
 			cmds[0] = repls_wikd(sh, cmds[0]);
 			cmds[0] = load_wikd(sh, cmds[0]);

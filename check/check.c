@@ -70,7 +70,7 @@ int check(t_sh *sh, char *cmd)
         if (val_tokn(tokn, sh->tokn, sh))
         {
             fprint(2, "minish: parse error near `%s'\n", cmds[i]);
-            sh->exit_c = 258;
+            sh->exit_c = 2;
             free2(cmds);
             return (0);
         }
@@ -80,7 +80,7 @@ int check(t_sh *sh, char *cmd)
     {
         fprint(2, "minish: parse error near `\\n'\n");
         free2(cmds);
-        sh->exit_c = 258;
+        sh->exit_c = 2;
         return (0);
     }
     // fprint(1, "\n");
