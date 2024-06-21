@@ -40,9 +40,9 @@ void	apend_exit(t_sh *sh)
 	apend_bf(sh, exit + 48);
 }
 
-char	trans(char c)
+char	trans(char c, int splt)
 {
-	if (is_in(" \t\v\f\r\n", c))
+	if (is_in(" \t\v\f\r\n", c) && splt)
 		return (RS);
 	if (c == '"')
 		return ('\23');
@@ -119,7 +119,7 @@ void	apend_var(t_sh *sh, char *ev, char splt)
 		if (splt == ' ')
 			apend_bf(sh, ev[i]);
 		else
-			apend_bf(sh, trans(ev[i]));
+			apend_bf(sh, trans(ev[i], 1));
 	}
 }
 

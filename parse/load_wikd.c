@@ -112,26 +112,31 @@ void apend_wikd(t_sh *sh, char *wikd)
     if (dir == NULL)
         free_sh(sh, 2);
     dent = readdir(dir);
-    dent = readdir(dir);
-    dent = readdir(dir);
     while (dent)
     {
+        // printf("%s ", dent->d_name);
         match = match_wikd(dent->d_name, wikd);
         if (match == 2)
             free_sh(sh, 2);
-        else if (match)
+        else if (match && (dent->d_name[0] != '.' || wikd[0] == '.'))
         {
+            // printf(" match");
             sh->tokn = 1;
             apends_bf(sh, dent->d_name);
             apend_bf(sh, RS);
         }
+        // printf("\n");
         dent = readdir(dir);
     }
     closedir(dir);
     if (!sh->tokn)
     {
+        // void dequo(char *c)
+        wikd = sdupr(wikd);
+        dequo(wikd);
         apends_bf(sh, wikd);
         apend_bf(sh, RS);
+        free(wikd);
     }
 }
 

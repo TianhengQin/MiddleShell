@@ -79,7 +79,7 @@ void	run_shell(t_sh *sh)
 			sh->cmd = 0;
             continue;
 		}
-		save_history(sh->cmd);
+		// save_history(sh->cmd);
 		if (!check(sh, sh->cmd))
 		{
 			free(sh->cmd);
@@ -111,11 +111,11 @@ void	run_shell(t_sh *sh)
 		// 	free_sh(sh, 2);
 	
 		// printf("[%s]\n\n", sh->cmd);
-		sh->stdi = dup(0);
-		sh->stdo = dup(1);
+		// sh->stdi = dup(0);
+		// sh->stdo = dup(1);
         exe_all(sh, sh->cmd, 0);
-		dup2(sh->stdi, 0);
-		dup2(sh->stdo, 1);
+		// dup2(sh->stdi, 0);
+		// dup2(sh->stdo, 1);
 		// printf("exit: %lld\n", sh->exit_c);
 		// fprint(1, "a\n");
 	}
@@ -157,7 +157,7 @@ int	all(char **env)
 	sh.bf_inx = 0;
 	if (!sh.bf)
 		free_sh(&sh, 2);
-	load_history(&sh);
+	// load_history(&sh);
 	init_bf(&sh);
 	if (env[0])
 		set_env(&sh);

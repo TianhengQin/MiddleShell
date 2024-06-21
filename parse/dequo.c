@@ -129,3 +129,24 @@ void dequo(char *c)
     }
     c[j] = 0;
 }
+
+void dequor(char *c)
+{
+    int i;
+    int j;
+    int quo;
+
+    i = 0;
+    j = 0;
+    quo = 0;
+    while (c[i])
+    {
+        quo = check_quo(quo, c[i], 10);
+        if (quo >= 10)
+            quo = quo - 10;
+        else
+            c[j++] = c[i];
+        i++;
+    }
+    c[j] = 0;
+}

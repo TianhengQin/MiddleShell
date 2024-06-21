@@ -159,7 +159,7 @@ int openfile(t_sh *sh, int tokn, char *file)
 	char **fnams = ft_split(fnam, RSS);
 	if (fnams[1] || !fnams[0])
 	{
-		fprint(2, "ambigus dir\n");
+		fprint(2, "midsh: ambiguous redirect\n");
 		free2(fnams);
 		free(fnam);
 		return (1);
@@ -249,11 +249,9 @@ int redir(t_sh *sh, char *cmd)
 
 int exe_one(t_sh *sh, char *cmd, int fork)
 {
-
 	(void)fork;
-    // printf("--- one: %s\n",cmd);
+    // fprint(2, "--- one: %s\n",cmd);
     char **cmds = split(cmd, "|");
-    // int i = -1;
     if (cmds[1] == 0)
     {
 		if (trm_prth(cmds[0]))
@@ -264,7 +262,11 @@ int exe_one(t_sh *sh, char *cmd, int fork)
         else
 		{
 			if (redir(sh, cmds[0]))
+			{
+				free(cmd);
+				free2(cmds);
 				return (1);
+			}
 			cmds[0] = load_var(sh, cmds[0]);
 			cmds[0] = repls_wikd(sh, cmds[0]);
 			cmds[0] = load_wikd(sh, cmds[0]);

@@ -60,4 +60,5 @@ void	run_unset(t_sh *sh, char **cs)
 		if (i >= 0)
 			env_delete(sh, i);
 	}
+	set_envpth(sh);
 }

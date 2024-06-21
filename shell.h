@@ -29,6 +29,14 @@
 # define RSS "\36"
 # define BF_SZ 8192
 
+# ifndef FD_LIMIT
+#  define FD_LIMIT 1024
+# endif
+
+# ifndef PS_LIMIT
+#  define PS_LIMIT 512
+# endif
+
 long long	g_s;
 
 typedef struct s_sh
@@ -122,7 +130,7 @@ char *load_var(t_sh *sh, char *cmd);
 char *load_wikd(t_sh *sh, char *cmd);
 char *repls_wikd(t_sh *sh, char *cmd);
 
-char	trans(char c);
+char	trans(char c, int splt);
 void sde_trans(char *c);
 void sde_trans2(char **cs);
 void dequo(char *c);
@@ -178,7 +186,7 @@ void		send_line(char *cs, int fd);
 void		reset_io(t_sh *sh);
 //pipe
 void		set_pip(t_sh *sh);
-void		close_pip(t_sh *sh, int j);
+void		close_pip(int *pip, int len);
 //free
 void	free1(char *p);
 void		free2(char **cs);

@@ -14,6 +14,8 @@
 
 static size_t	skip_quo(char *dup, size_t i)
 {
+	int ps;
+
 	if (dup[i] == (39))
 	{
 		i++;
@@ -29,8 +31,17 @@ static size_t	skip_quo(char *dup, size_t i)
 	else if (dup[i] == '(')
 	{
 		i++;
-		while (dup[i] && dup[i] != ')')
+		ps = 1;
+		while (dup[i] && ps)
+		{
+			if (dup[i] == 39 || dup[i] == 34)
+				i = skip_quo(dup, i);
+			if (dup[i] == '(')
+				ps++;
+			else if (dup[i] == ')')
+				ps--;
 			i++;
+		}
 	}
 	if (dup[i])
 		return (i);

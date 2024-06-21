@@ -37,7 +37,7 @@ void apends_bf(t_sh *sh, char *s)
         else if (s[i] == '\21')
             apend_bf(sh, '?');
         else
-            apend_bf(sh, trans(s[i]));
+            apend_bf(sh, trans(s[i], 0));
         i++;
     }
 }

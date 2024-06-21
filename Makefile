@@ -43,7 +43,6 @@ all:$(NAME)
 
 $(NAME):$(OBJS)
 		$(CC) $(CFLAGS) -lreadline $(OBJS) -o $(NAME)
-		$(CC) $(CFLAGS) -lreadline $(OBJS) -o minishell_bonus
 
 re:fclean all
 
