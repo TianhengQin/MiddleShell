@@ -60,16 +60,13 @@ void	save_history(char *cmd)
 
 void	run_shell(t_sh *sh)
 {
-	char	*p;
-
     sh->runing = 1;
 	while (sh->runing)
 	{
-		// printf("exit: %lld\n", sh->exit_c);
-		p = get_prompt(sh);
-		fprint(1, "%s\n",p);
+		sh->p = get_prompt(sh);
+		fprint(1, "%s\n",sh->p);
 		sh->cmd = readline(NULL);
-		free(p);
+		free(sh->p);
 		if (!sh->cmd)
 			break ;
 		if (!sh->cmd[0] || all_sp(sh->cmd))
@@ -89,36 +86,8 @@ void	run_shell(t_sh *sh)
 		sh->cmd = sdup(sh->bf);
 		if (!(sh->cmd))
 			free_sh(sh, 2);
-		// printf("exit: %lld\n", sh->exit_c);
-
-
-		// sh->cmd = load_var(sh, sh->cmd);
-		// if (!sh->cmd)
-		// 	free_sh(sh, 2);
-
-		
-		// printf("%s\n", sh->cmd);
-
-		// sh->cmd  = repls_wikd(sh, sh->cmd);
-		// if (!sh->cmd)
-		// 	free_sh(sh, 2);
-		
-		// printf("%s\n", sh->cmd);
-	
-		// sh->cmd  = load_wikd(sh, sh->cmd);
-		// if (!sh->cmd)
-		// 	free_sh(sh, 2);
-	
-		// printf("[%s]\n\n", sh->cmd);
-		// sh->stdi = dup(0);
-		// sh->stdo = dup(1);
         exe_all(sh, sh->cmd, 0);
-		// dup2(sh->stdi, 0);
-		// dup2(sh->stdo, 1);
-		// printf("exit: %lld\n", sh->exit_c);
-		// fprint(1, "a\n");
 	}
-	// printf("\n[Process completed]\n\n");
 }
 
 void load_history(t_sh *sh)

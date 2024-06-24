@@ -295,6 +295,7 @@ int exe_one(t_sh *sh, char *cmd, int fork)
 			{
 				free(cmd);
 				free2(cmds);
+				re_io(sh);
 				return (1);
 			}
 			cmds[0] = load_var(sh, cmds[0]);

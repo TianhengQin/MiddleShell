@@ -51,6 +51,7 @@ typedef struct s_sh
 	int			child;
 	int			exe;
 	int			*pip;
+	int			*pid;
 	char		***iof;
 	int			stdi;
 	int			stdo;
@@ -59,6 +60,7 @@ typedef struct s_sh
 	long long	exit_c;
 	int			pidf;
 	int			prs;
+	int			len;
 
 	char		*bf;
 	int			bf_inx;
@@ -67,6 +69,8 @@ typedef struct s_sh
 	char		**bff;
 	int			bff_inx;
 	int			bff_sz;
+
+	char		*p;
 
 	char		*cmd;
 	char		**cs;
