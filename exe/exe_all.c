@@ -1,10 +1,37 @@
 #include "shell.h"
 
+void skip_prth(char *cmd, int *i)
+{
+    int ps;
+
+    ps = 1;
+    while (cmd[*i] && ps)
+    {
+        if (cmd[*i] == '\'')
+        {
+            ++(*i);
+            while (cmd[*i] != '\'')
+                ++(*i);
+        }
+        else if (cmd[*i] == '"')
+        {
+            ++(*i);
+            while (cmd[*i] != '"')
+                ++(*i);
+        }
+        if (cmd[*i] == '(')
+            ps++;
+        else if (cmd[*i] == ')')
+            ps--;
+        (*i)++;
+    }
+}
 
 int split_token(char *cmd)
 {
-    int i = 0;
-    int ps = 1;
+    int i;
+
+    i = 0;
     while (cmd[i] && cmd[++i])
     {
         if (cmd[i - 1] == '\'')
@@ -20,38 +47,17 @@ int split_token(char *cmd)
                 ++i;
         }
         else if (cmd[i - 1] == '(')
-        {
-            while (cmd[i] && ps)
-            {
-                if (cmd[i] == '\'')
-                {
-                    ++i;
-                    while (cmd[i] != '\'')
-                        ++i;
-                }
-                else if (cmd[i] == '"')
-                {
-                    ++i;
-                    while (cmd[i] != '"')
-                        ++i;
-                }
-                if (cmd[i] == '(')
-                    ps++;
-                else if (cmd[i] == ')')
-                    ps--;
-                i++;
-            }
-        }
+            skip_prth(cmd, &i);
         if (cmd[i] == '&' && cmd[i - 1] == '&')
         {
             cmd[i] = 0;
-            cmd[i-1] = 0;
+            cmd[i - 1] = 0;
             return (10 * i + 1);
         }
         if (cmd[i] == '|' && cmd[i - 1] == '|')
         {
             cmd[i] = 0;
-            cmd[i-1] = 0;
+            cmd[i - 1] = 0;
             return (10 * i + 2);
         }
     }
@@ -90,12 +96,30 @@ int trm_prth(char *s)
     return (re);
 }
 
+void check_malloc(t_sh *sh, char *s1, char *s2, int i)
+{
+    if (i)
+    {
+        if (!s1 || !s2)
+        {
+            free1(s1);
+            free1(s2);
+            free_sh(sh, 2);
+        }
+    }
+    else
+    {
+        if (!s1)
+            free_sh(sh, 2);
+    }
+}
+
 int exe_all(t_sh *sh, char *cmd, int fork)
 {
     int find;
 
-    sh->stdi = dup(0);
-	sh->stdo = dup(1);
+    check_malloc(sh, cmd, 0, 0);
+    // dup_io(sh, cmd);
     // fprint(2, "--- all: %s\n", cmd);
     find = split_token(cmd);
     if (find % 10 == 1)
@@ -104,11 +128,10 @@ int exe_all(t_sh *sh, char *cmd, int fork)
         sh->exit_c = exe_or(sh, sdup(cmd), sdup(cmd + find / 10 + 1));
     else
         sh->exit_c = exe_one(sh, sdup(cmd), fork);
+    // fprint(2, "--- check: %s\n", cmd);
+    // re_io(sh);
+    // fprint(2, "--- check: %s\n", cmd);
     free(cmd);
-    dup2(sh->stdi, 0);
-	dup2(sh->stdo, 1);
-    close(sh->stdi);
-    close(sh->stdo);
     if (fork)
         exit(sh->exit_c);
     return (sh->exit_c);

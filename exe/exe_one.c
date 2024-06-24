@@ -197,7 +197,6 @@ int openfile(t_sh *sh, int tokn, char *file)
 
 int redir(t_sh *sh, char *cmd)
 {
-
 	int i = 0;
 	int tokn = 0;
 	int j = 0;
@@ -247,6 +246,36 @@ int redir(t_sh *sh, char *cmd)
 	return (0);
 }
 
+void dup_io(t_sh *sh, char *cmd)
+{
+    sh->stdi = dup(0);
+    if (sh->stdi == -1)
+    {
+        free(cmd);
+        free_sh(sh, 2);
+    }
+    sh->stdo = dup(1);
+    if (sh->stdo == -1)
+    {
+        close(sh->stdi);
+        free(cmd);
+        free_sh(sh, 2);
+    }
+}
+
+void re_io(t_sh *sh)
+{
+    if (dup2(sh->stdi, 0) == -1)
+    {
+        // fprint(2, "fd %d\n", sh->stdi);
+        free_sh(sh, 2);
+    }
+	if (dup2(sh->stdo, 1) == -1)
+        free_sh(sh, 2);
+    close(sh->stdi);
+    close(sh->stdo);
+}
+
 int exe_one(t_sh *sh, char *cmd, int fork)
 {
 	(void)fork;
@@ -261,6 +290,7 @@ int exe_one(t_sh *sh, char *cmd, int fork)
 		}
         else
 		{
+			dup_io(sh, cmd);
 			if (redir(sh, cmds[0]))
 			{
 				free(cmd);
@@ -274,6 +304,7 @@ int exe_one(t_sh *sh, char *cmd, int fork)
 			char **cmdss = split(cmds[0], RSS);
 			sh->exit_c = run_one(sh, cmdss, 0);
 			free2(cmdss);
+			re_io(sh);
 		}
     }
     else

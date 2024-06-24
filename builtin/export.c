@@ -65,7 +65,7 @@ void	show_exp(t_sh *sh)
 		l++;
 	ix = malloc((l - 1) * sizeof(int));
 	if (!ix)
-		return ;
+		free_sh(sh, 2) ;
 	while (++i < l - 1)
 		ix[i] = i;
 	sort_env(sh, ix, l);

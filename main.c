@@ -69,7 +69,6 @@ void	run_shell(t_sh *sh)
 		p = get_prompt(sh);
 		fprint(1, "%s\n",p);
 		sh->cmd = readline(NULL);
-		// sh->cmd = read_line(sh);
 		free(p);
 		if (!sh->cmd)
 			break ;
@@ -140,7 +139,6 @@ void load_history(t_sh *sh)
 		add_history(cmd);
 		free(cmd);
 		cmd = read_line(sh, his);
-		// printf("read %s\n", cmd);
 	}
 	close(his);
 }
@@ -152,9 +150,7 @@ int	all(char **env)
 	sh.exit_c = 0;
 	sh.env = env;
 	sh.bf = malloc(BF_SZ + 1);
-	sh.bf[0] = 0;
 	sh.bf_sz = BF_SZ;
-	sh.bf_inx = 0;
 	if (!sh.bf)
 		free_sh(&sh, 2);
 	// load_history(&sh);
