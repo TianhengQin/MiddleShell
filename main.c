@@ -86,7 +86,8 @@ void	run_shell(t_sh *sh)
 		sh->cmd = sdup(sh->bf);
 		if (!(sh->cmd))
 			free_sh(sh, 2);
-        exe_all(sh, sh->cmd, 0);
+        if (exe_all(sh, sh->cmd, 0) == 12)
+			free_sh(sh, 2);
 	}
 }
 

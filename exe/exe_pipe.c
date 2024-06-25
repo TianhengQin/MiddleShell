@@ -22,11 +22,13 @@ void one_fork(t_sh *sh, char **cs)
     {
         if (sh->i > 0)
         {
-            dup2(sh->pip[2 * (sh->i - 1)], 0);
+            if (dup2(sh->pip[2 * (sh->i - 1)], 0) == -1)
+                free_sh(sh, 2);
         }
         if (sh->i < sh->len - 1)
         {
-            dup2(sh->pip[2 * sh->i + 1], 1);
+            if (dup2(sh->pip[2 * sh->i + 1], 1) == -1)
+                free_sh(sh, 2);
         }
         close_pip(sh->pip, sh->len);
         exe_all(sh, sdup(cs[sh->i]), 1);
@@ -36,11 +38,8 @@ void one_fork(t_sh *sh, char **cs)
     }
 }
 
-int exe_pip(t_sh *sh, char **cs)
+void crat_pip(t_sh *sh)
 {
-    int ext;
-
-    sh->len = len2(cs);
     sh->pid = malloc(sizeof(int) * sh->len);
     if (!sh->pid)
         free_sh(sh, 2);
@@ -54,6 +53,22 @@ int exe_pip(t_sh *sh, char **cs)
             free_sh(sh, 2);
         (sh->i)++;
     }
+}
+
+void fre_pip(t_sh *sh)
+{
+    free(sh->pid);
+    free(sh->pip);
+    sh->pid = 0;
+    sh->pip = 0;
+}
+
+int exe_pip(t_sh *sh, char **cs)
+{
+    int ext;
+
+    sh->len = len2(cs);
+    crat_pip(sh);
     sh->i = -1;
     while (cs[++(sh->i)])
 	    one_fork(sh, cs);
@@ -62,5 +77,6 @@ int exe_pip(t_sh *sh, char **cs)
 	while (++(sh->i) < sh->len)
 		waitpid(sh->pid[sh->i], &ext, 0);
 	sh->exit_c = error_code(ext);
+    fre_pip(sh);
     return (sh->exit_c);
 }

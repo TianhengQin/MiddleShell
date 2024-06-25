@@ -279,15 +279,18 @@ void re_io(t_sh *sh)
 int exe_one(t_sh *sh, char *cmd, int fork)
 {
 	(void)fork;
-    // fprint(2, "--- one: %s\n",cmd);
+	if (check_malloc(sh, cmd, 0, 0) == -1)
+		return (12);
     char **cmds = split(cmd, "|");
+	if (!cmds)
+	{
+		free(cmd);
+		return (12);
+	}
     if (cmds[1] == 0)
     {
 		if (trm_prth(cmds[0]))
-		{
-			// printf("()\n");
             sh->exit_c = exe_all(sh, sdup(cmds[0]), 0);
-		}
         else
 		{
 			dup_io(sh, cmd);
@@ -301,18 +304,16 @@ int exe_one(t_sh *sh, char *cmd, int fork)
 			cmds[0] = load_var(sh, cmds[0]);
 			cmds[0] = repls_wikd(sh, cmds[0]);
 			cmds[0] = load_wikd(sh, cmds[0]);
-			// printf("dub\n");
 			char **cmdss = split(cmds[0], RSS);
+			if (!cmdss)
+				return (12);
 			sh->exit_c = run_one(sh, cmdss, 0);
 			free2(cmdss);
 			re_io(sh);
 		}
     }
     else
-    {
-    	// printf("--- pip: %s\n",cmd);
         sh->exit_c = exe_pip(sh, cmds);
-    }
     free2(cmds);
     free(cmd);
     return (sh->exit_c);

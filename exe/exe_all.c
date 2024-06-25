@@ -96,31 +96,35 @@ int trm_prth(char *s)
     return (re);
 }
 
-void check_malloc(t_sh *sh, char *s1, char *s2, int i)
+int check_malloc(t_sh *sh, char *s1, char *s2, int i)
 {
+    (void)sh;
     if (i)
     {
         if (!s1 || !s2)
         {
             free1(s1);
             free1(s2);
-            free_sh(sh, 2);
+            return (-1);
         }
     }
     else
     {
         if (!s1)
-            free_sh(sh, 2);
+        {
+            free(s1);
+            return (-1);
+        }
     }
+    return (0);
 }
 
 int exe_all(t_sh *sh, char *cmd, int fork)
 {
     int find;
 
-    check_malloc(sh, cmd, 0, 0);
-    // dup_io(sh, cmd);
-    // fprint(2, "--- all: %s\n", cmd);
+    if (check_malloc(sh, cmd, 0, 0) == -1)
+        return (12);
     find = split_token(cmd);
     if (find % 10 == 1)
         sh->exit_c = exe_and(sh, sdup(cmd), sdup(cmd + find / 10 + 1));
@@ -128,11 +132,8 @@ int exe_all(t_sh *sh, char *cmd, int fork)
         sh->exit_c = exe_or(sh, sdup(cmd), sdup(cmd + find / 10 + 1));
     else
         sh->exit_c = exe_one(sh, sdup(cmd), fork);
-    // fprint(2, "--- check: %s\n", cmd);
-    // re_io(sh);
-    // fprint(2, "--- check: %s\n", cmd);
     free(cmd);
     if (fork)
-        exit(sh->exit_c);
+        free_sh(sh, 1);
     return (sh->exit_c);
 }
