@@ -23,19 +23,11 @@
 # include <termios.h>
 # include <fcntl.h>
 
-# define HERE_DOC ".here_doc_a72>7!e;wL=roaso(7uN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
-# define HISTORY ".midsh_history_a72>7!e;wL=roasfaso(7uN]>uO46#bI1aZX<tkCl8CPR.txt"
+# define HERE_DOC ".here_doc_ 72>7!e;wL=roaso(7uN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
+# define HISTORY ".midsh_history_K{0J=75+1W]7#=u}rka@D$YU6j+&1:_qnLKf+VW#M*.txt"
 # define RS '\36'
 # define RSS "\36"
 # define BF_SZ 8192
-
-# ifndef FD_LIMIT
-#  define FD_LIMIT 1024
-# endif
-
-# ifndef PS_LIMIT
-#  define PS_LIMIT 512
-# endif
 
 long long	g_s;
 
@@ -81,6 +73,7 @@ typedef struct s_sh
 	int			tokn;
 	int			lp;
 	int			rp;
+	char		*hirdoc;
 }	t_sh;
 
 //utils
@@ -160,7 +153,7 @@ int			ck_start(char *cmd);
 //exe
 int exe_all(t_sh *sh, char *cmd, int fork);
 int exe_and(t_sh *sh, char *cmd1, char *cmd2);
-int exe_one(t_sh *sh, char *cmd, int fork);
+int exe_one(t_sh *sh, char *cmd);
 int exe_or(t_sh *sh, char *cmd1, char *cmd2);
 int exe_pip(t_sh *sh, char **cs);
 int run_one(t_sh *sh, char **cs, int fork);

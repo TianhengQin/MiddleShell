@@ -71,7 +71,13 @@ int exe_pip(t_sh *sh, char **cs)
     crat_pip(sh);
     sh->i = -1;
     while (cs[++(sh->i)])
+    {
+        // ext = 0;
+        // while (ext < 1000)
+        //     ext++;
+        usleep(100);
 	    one_fork(sh, cs);
+    }
     close_pip(sh->pip, sh->len);
     sh->i = -1;
 	while (++(sh->i) < sh->len)

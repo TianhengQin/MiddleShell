@@ -58,11 +58,22 @@ void	save_history(char *cmd)
 	close(his);
 }
 
+void	del_hirdoc(t_sh *sh)
+{
+	sh->hirdoc[10] = ' ';
+	while (access(sh->hirdoc, F_OK) == 0)
+	{
+		unlink(sh->hirdoc);
+		sh->hirdoc[10]++;
+	}
+}
+
 void	run_shell(t_sh *sh)
 {
     sh->runing = 1;
 	while (sh->runing)
 	{
+		del_hirdoc(sh);
 		sh->p = get_prompt(sh);
 		fprint(1, "%s\n",sh->p);
 		sh->cmd = readline(NULL);
@@ -84,10 +95,11 @@ void	run_shell(t_sh *sh)
 		}
 		free(sh->cmd);
 		sh->cmd = sdup(sh->bf);
-		if (!(sh->cmd))
-			free_sh(sh, 2);
         if (exe_all(sh, sh->cmd, 0) == 12)
+		{
+			del_hirdoc(sh);
 			free_sh(sh, 2);
+		}
 	}
 }
 
@@ -118,10 +130,11 @@ int	all(char **env)
 	t_sh	sh;
 
 	sh.exit_c = 0;
+	sh.hirdoc = sdup(HERE_DOC);
 	sh.env = env;
 	sh.bf = malloc(BF_SZ + 1);
 	sh.bf_sz = BF_SZ;
-	if (!sh.bf)
+	if (!sh.bf || !sh.hirdoc)
 		free_sh(&sh, 2);
 	// load_history(&sh);
 	init_bf(&sh);

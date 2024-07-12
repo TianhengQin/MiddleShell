@@ -96,8 +96,6 @@ int fork_exe(t_sh *sh, char **cs)
 
 int run_exe(t_sh *sh, char **cs)
 {
-    // (void)sh;
-    // (void)cs;
 	char *pth = get_pth(sh->pwd, sh->evpth, cs[0]);
 	if (!pth)
 	{
@@ -200,19 +198,26 @@ int redir(t_sh *sh, char *cmd)
 	int i = 0;
 	int tokn = 0;
 	int j = 0;
+	int prth = 0;
 	while (cmd[i])
 	{
 		// fprint(2, "idx %d\n", i);
 		if (cmd[i] == '(')
 		{
-			while (cmd[i] != ')')
+			prth = 1;
+			i++;
+			while (prth)
+			{
+				if (cmd[i] == '(')
+					prth++;
+				else if (cmd[i] == ')')
+					prth--;
 				i++;
-			continue;
+			}
 		}
 		if ((i == 0 || cmd[i - 1] == RS) && cmd[i] != RS)
 		{
 			tokn = is_tokn(&cmd[i]);
-			// fprint(2, "is %d\n", tokn);
 			if (tokn == 3 || tokn == 4 || tokn > 7)
 			{
 				j = 0;
@@ -232,13 +237,7 @@ int redir(t_sh *sh, char *cmd)
 					cmd[i++] = RS;
 			}
 			else
-			{
-				// fprint(2, "not tokn %d\n", i);
-
 				i++;
-				// fprint(2, "not tokn %d\n", i);
-
-			}
 		}
 		else
 			i++;
@@ -276,12 +275,28 @@ void re_io(t_sh *sh)
     close(sh->stdo);
 }
 
-int exe_one(t_sh *sh, char *cmd, int fork)
+int fork_all(t_sh *sh, char *cmd)
 {
-	(void)fork;
+	pid_t	m_pid;
+	int		ext;
+
+	m_pid = fork();
+	if (m_pid == 0)
+	{
+		exe_all(sh, cmd, 1);
+	}
+	waitpid(m_pid, &ext, 0);
+	free(cmd);
+	return(error_code(ext));
+}
+
+int exe_one(t_sh *sh, char *cmd)
+{
+	char **cmds;
+
 	if (check_malloc(sh, cmd, 0, 0) == -1)
 		return (12);
-    char **cmds = split(cmd, "|");
+    cmds = split(cmd, "|");
 	if (!cmds)
 	{
 		free(cmd);
@@ -290,7 +305,7 @@ int exe_one(t_sh *sh, char *cmd, int fork)
     if (cmds[1] == 0)
     {
 		if (trm_prth(cmds[0]))
-            sh->exit_c = exe_all(sh, sdup(cmds[0]), 0);
+            sh->exit_c = fork_all(sh, sdup(cmds[0]));
         else
 		{
 			dup_io(sh, cmd);
@@ -301,14 +316,19 @@ int exe_one(t_sh *sh, char *cmd, int fork)
 				re_io(sh);
 				return (1);
 			}
-			cmds[0] = load_var(sh, cmds[0]);
-			cmds[0] = repls_wikd(sh, cmds[0]);
-			cmds[0] = load_wikd(sh, cmds[0]);
-			char **cmdss = split(cmds[0], RSS);
-			if (!cmdss)
-				return (12);
-			sh->exit_c = run_one(sh, cmdss, 0);
-			free2(cmdss);
+			if (trm_prth(cmds[0]))
+            	sh->exit_c = fork_all(sh, sdup(cmds[0]));
+			else
+			{
+				cmds[0] = load_var(sh, cmds[0]);
+				cmds[0] = repls_wikd(sh, cmds[0]);
+				cmds[0] = load_wikd(sh, cmds[0]);
+				char **cmdss = split(cmds[0], RSS);
+				if (!cmdss)
+					return (12);
+				sh->exit_c = run_one(sh, cmdss, 0);
+				free2(cmdss);
+			}
 			re_io(sh);
 		}
     }

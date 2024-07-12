@@ -27,7 +27,7 @@ void skip_prth(char *cmd, int *i)
     }
 }
 
-int split_token(char *cmd)
+int find_tokn(char *cmd, char tokn)
 {
     int i;
 
@@ -48,18 +48,29 @@ int split_token(char *cmd)
         }
         else if (cmd[i - 1] == '(')
             skip_prth(cmd, &i);
-        if (cmd[i] == '&' && cmd[i - 1] == '&')
-        {
-            cmd[i] = 0;
-            cmd[i - 1] = 0;
-            return (10 * i + 1);
-        }
-        if (cmd[i] == '|' && cmd[i - 1] == '|')
-        {
-            cmd[i] = 0;
-            cmd[i - 1] = 0;
-            return (10 * i + 2);
-        }
+        if (cmd[i] == tokn && cmd[i - 1] == tokn)
+            return (i);
+    }
+    return (0);
+}
+
+int split_token(char *cmd)
+{
+    int find;
+
+    find = find_tokn(cmd, '&');
+    if (find)
+    {
+        cmd[find] = 0;
+        cmd[find - 1] = 0;
+        return (find * 10 + 1);
+    }
+    find = find_tokn(cmd, '|');
+    if (find)
+    {
+        cmd[find] = 0;
+        cmd[find - 1] = 0;
+        return (find * 10 + 2);
     }
     return (0);
 }
@@ -83,16 +94,6 @@ int trm_prth(char *s)
         s[i--] = RS;
         s[j++] = RS;
     }
-    // while (s[i] == ')' && s[j] == '(' && i > j)
-    // {
-    //     re = 1;
-    //     s[i--] = RS;
-    //     s[j++] = RS;
-    //     while (i >= 0 && s[i] == RS)
-	// 	    i--;
-    //     while (s[j] && s[j] == RS)
-	// 	    j++;
-    // }
     return (re);
 }
 
@@ -131,7 +132,7 @@ int exe_all(t_sh *sh, char *cmd, int fork)
     else if (find % 10 == 2)
         sh->exit_c = exe_or(sh, sdup(cmd), sdup(cmd + find / 10 + 1));
     else
-        sh->exit_c = exe_one(sh, sdup(cmd), fork);
+        sh->exit_c = exe_one(sh, sdup(cmd));
     free(cmd);
     if (fork)
         free_sh(sh, 1);

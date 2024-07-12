@@ -51,6 +51,7 @@ char	*free_sh(t_sh *sh, int if_exit)
 	free1(sh->user);
 	free1(sh->home);
 	free1(sh->bf);
+	free1(sh->hirdoc);
 	if (if_exit == 2)
 		perror("midsh");
 	if (if_exit)

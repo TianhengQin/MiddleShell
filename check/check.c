@@ -49,6 +49,39 @@ int val_tokn(int tokn, int prev, t_sh *sh)
     return 0;
 }
 
+void here_doc(t_sh *sh, char *dlm)
+{
+    int hd;
+    char *line;
+
+	hd = open(sh->hirdoc, O_CREAT | O_WRONLY | O_TRUNC, 00644);
+    if (hd < 0)
+    {
+        perror("heredoc:");
+        return ;
+    }
+    // printf("dlm %s\n", dlm);
+    while (1)
+	{
+		line = readline("heredoc> ");
+		if (!line)
+		{
+			write(1,"\n",1);
+			break ;
+		}
+		if (sncmp(line, dlm, 2147483647) == 0)
+		{
+			free(line);
+			break ;
+		}
+		write(hd, line, len(line));
+        write(hd, "\n", 1);
+		free(line);
+	}
+    close(hd);
+    (sh->hirdoc)[10] = (sh->hirdoc)[10] + 1;
+}
+
 int check(t_sh *sh, char *cmd)
 {
     char **cmds;
@@ -63,6 +96,9 @@ int check(t_sh *sh, char *cmd)
     sh->tokn = -1;
     sh->lp = 0;
     sh->rp = 0;
+    sh->hirdoc = sdup(HERE_DOC);
+    if (!sh->hirdoc)
+        free_sh(sh, 2);
     while (cmds[++i])
     {
         // fprint(1, "[%s]",cmds[i]);
@@ -74,6 +110,8 @@ int check(t_sh *sh, char *cmd)
             free2(cmds);
             return (0);
         }
+        if (sh->tokn == 9)
+            here_doc(sh, cmds[i]);
         sh->tokn = tokn;
     }
     if (sh->lp > sh->rp || tokn > 2)
