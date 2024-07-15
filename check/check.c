@@ -96,7 +96,7 @@ int check(t_sh *sh, char *cmd)
     sh->tokn = -1;
     sh->lp = 0;
     sh->rp = 0;
-    sh->hirdoc = sdup(HERE_DOC);
+    sh->hirdoc[10] = 'A';
     if (!sh->hirdoc)
         free_sh(sh, 2);
     while (cmds[++i])

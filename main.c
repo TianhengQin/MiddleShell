@@ -60,12 +60,17 @@ void	save_history(char *cmd)
 
 void	del_hirdoc(t_sh *sh)
 {
-	sh->hirdoc[10] = ' ';
+	sh->hirdoc[10] = 'A';
 	while (access(sh->hirdoc, F_OK) == 0)
 	{
 		unlink(sh->hirdoc);
 		sh->hirdoc[10]++;
 	}
+}
+
+void	pre_sh()
+{
+	
 }
 
 void	run_shell(t_sh *sh)
@@ -144,6 +149,7 @@ int	all(char **env)
 		set_no_env(&sh);
 	run_shell(&sh);
 	free_sh(&sh, 0);
+	del_hirdoc(&sh);
 	return (sh.exit_c);
 }
 

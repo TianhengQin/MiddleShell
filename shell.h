@@ -23,7 +23,7 @@
 # include <termios.h>
 # include <fcntl.h>
 
-# define HERE_DOC ".here_doc_ 72>7!e;wL=roaso(7uN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
+# define HERE_DOC ".here_doc_A72>7!e;wL=roaso(7uN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
 # define HISTORY ".midsh_history_K{0J=75+1W]7#=u}rka@D$YU6j+&1:_qnLKf+VW#M*.txt"
 # define RS '\36'
 # define RSS "\36"
@@ -74,6 +74,7 @@ typedef struct s_sh
 	int			lp;
 	int			rp;
 	char		*hirdoc;
+	char		hd_inx;
 }	t_sh;
 
 //utils
