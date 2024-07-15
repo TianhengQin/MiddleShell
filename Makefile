@@ -35,7 +35,7 @@ SRCS	= $(addsuffix .c, $(addprefix builtin/, $(BUIN))) \
 
 OBJS	= $(SRCS:.c=.o)
 INCL	= ./
-NAME	= minishell
+NAME	= midsh
 CFLAGS	= -Wall -Wextra -Werror -I$(INCL)
 CC		= cc
 
