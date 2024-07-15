@@ -70,7 +70,7 @@ void	del_hirdoc(t_sh *sh)
 
 void	pre_sh()
 {
-	
+
 }
 
 void	run_shell(t_sh *sh)
@@ -91,7 +91,7 @@ void	run_shell(t_sh *sh)
 			sh->cmd = 0;
             continue;
 		}
-		// save_history(sh->cmd);
+		save_history(sh->cmd);
 		if (!check(sh, sh->cmd))
 		{
 			free(sh->cmd);
@@ -141,7 +141,7 @@ int	all(char **env)
 	sh.bf_sz = BF_SZ;
 	if (!sh.bf || !sh.hirdoc)
 		free_sh(&sh, 2);
-	// load_history(&sh);
+	load_history(&sh);
 	init_bf(&sh);
 	if (env[0])
 		set_env(&sh);
