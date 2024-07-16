@@ -1,4 +1,5 @@
 minishell*
+midsh
 *.o
 .vscode
 .DS_*
