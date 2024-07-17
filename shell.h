@@ -188,6 +188,7 @@ void		reset_io(t_sh *sh);
 void		set_pip(t_sh *sh);
 void		close_pip(int *pip, int len);
 //free
+void	free0(char **p);
 void	free1(char *p);
 void		free2(char **cs);
 void		free3(char ***css);

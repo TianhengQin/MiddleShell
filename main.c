@@ -38,12 +38,12 @@ char	*get_prompt(t_sh *shell)
 	return (a);
 }
 
-void	rcv_sig(t_sh *shell)
-{
-	if (g_s)
-		shell->exit_c = 128 + g_s;
-	g_s = 0;
-}
+// void	rcv_sig(t_sh *shell)
+// {
+// 	if (g_s)
+// 		shell->exit_c = 128 + g_s;
+// 	g_s = 0;
+// }
 
 void	save_history(char *cmd)
 {
@@ -68,9 +68,15 @@ void	del_hirdoc(t_sh *sh)
 	}
 }
 
-void	pre_sh()
+void	pre(t_sh *sh)
 {
-
+	sh->stdi = dup(0);
+	del_hirdoc(sh);
+	sh->p = get_prompt(sh);
+	fprint(1, "%s\n",sh->p);
+	set_signal_b();
+	sh->cmd = readline(NULL);
+	free(sh->p);
 }
 
 void	run_shell(t_sh *sh)
@@ -78,28 +84,36 @@ void	run_shell(t_sh *sh)
     sh->runing = 1;
 	while (sh->runing)
 	{
-		del_hirdoc(sh);
-		sh->p = get_prompt(sh);
-		fprint(1, "%s\n",sh->p);
-		sh->cmd = readline(NULL);
-		free(sh->p);
+		pre(sh);
 		if (!sh->cmd)
-			break ;
+		{
+			if (g_s == 2)
+			{
+				write(1, "\n", 1);
+				dup2(sh->stdi, 0);
+				close(sh->stdi);
+				g_s = 0;
+				sh->exit_c = 1;
+				continue ;
+			}
+			else
+				break ;
+		}
 		if (!sh->cmd[0] || all_sp(sh->cmd))
 		{
-			free(sh->cmd);
-			sh->cmd = 0;
+			free0(&sh->cmd);
             continue;
 		}
-		// save_history(sh->cmd);
+		save_history(sh->cmd);
 		if (!check(sh, sh->cmd))
 		{
-			free(sh->cmd);
-			sh->cmd = 0;
+			free0(&sh->cmd);
 			continue;
 		}
+		close(sh->stdi);
 		free(sh->cmd);
 		sh->cmd = sdup(sh->bf);
+		set_signal_a();
         if (exe_all(sh, sh->cmd, 0) == 12)
 		{
 			del_hirdoc(sh);
@@ -141,15 +155,15 @@ int	all(char **env)
 	sh.bf_sz = BF_SZ;
 	if (!sh.bf || !sh.hirdoc)
 		free_sh(&sh, 2);
-	// load_history(&sh);
+	load_history(&sh);
 	init_bf(&sh);
 	if (env[0])
 		set_env(&sh);
 	else
 		set_no_env(&sh);
 	run_shell(&sh);
-	free_sh(&sh, 0);
 	del_hirdoc(&sh);
+	free_sh(&sh, 0);
 	return (sh.exit_c);
 }
 

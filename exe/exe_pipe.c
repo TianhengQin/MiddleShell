@@ -15,11 +15,12 @@ void close_pip(int *pip, int len)
 
 void one_fork(t_sh *sh, char **cs)
 {
-    sh->pid[sh->i] = fork();  
+    sh->pid[sh->i] = fork();
     if (sh->pid[sh->i] == -1)
         free_sh(sh, 2);
     else if (sh->pid[sh->i] == 0)
     {
+        set_signal_exe();
         if (sh->i > 0)
         {
             if (dup2(sh->pip[2 * (sh->i - 1)], 0) == -1)

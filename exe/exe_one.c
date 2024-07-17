@@ -74,6 +74,7 @@ int fork_exe(t_sh *sh, char **cs)
 	m_pid = fork();
 	if (m_pid == 0)
 	{
+		set_signal_exe();
 		pth = get_pth(sh->pwd, sh->evpth, cs[0]);
 		if (!pth)
 		{
@@ -114,6 +115,15 @@ int run_exe(t_sh *sh, char **cs)
     return 0;
 }
 
+int	run_cmd(t_sh *sh, char **cs, int fork)
+{
+	if (fork)
+		run_exe(sh, cs);
+	else
+		sh->exit_c = fork_exe(sh, cs);
+	return (sh->exit_c);
+}
+
 int run_one(t_sh *sh, char **cs, int fork)
 {
     sde_trans2(cs);
@@ -134,15 +144,33 @@ int run_one(t_sh *sh, char **cs, int fork)
 	else if (sncmp(cs[0], "exit", 5) == 0)
 		run_exit(sh, cs);
 	else
-    {
-        if (fork)
-		    run_exe(sh, cs);
-        else
-            sh->exit_c = fork_exe(sh, cs);
-    }
+        sh->exit_c = run_cmd(sh, cs, fork);
     if (fork)
         exit(sh->exit_c);
 	return(sh->exit_c);
+}
+
+int	dup_redir(int fd, int tokn)
+{
+	if (tokn == 3 || tokn == 8)
+	{
+		if (dup2(fd, 1) < 0)
+		{
+			close(fd);
+			return (1);
+		}
+		close(fd);
+	}
+	else
+	{
+		if (dup2(fd, 0) < 0)
+		{
+			close(fd);
+			return (1);
+		}
+		close(fd);
+	}
+	return (0);
 }
 
 int openfile(t_sh *sh, int tokn, char *file)
@@ -175,7 +203,7 @@ int openfile(t_sh *sh, int tokn, char *file)
 	else if (tokn == 9)
 	{
 		sh->hirdoc[10] = sh->hd_inx;
-		fprint(2, "open: %s\n", sh->hirdoc);
+		// fprint(2, "open: %s\n", sh->hirdoc);
 		fd = open(sh->hirdoc, O_RDONLY);
 	}
 	if (fd < 0)
@@ -184,19 +212,21 @@ int openfile(t_sh *sh, int tokn, char *file)
 		perror("midsh");
 		return (1);
 	}
-	if (tokn == 3 || tokn == 8)
-	{
-		dup2(fd, 1);
-		close(fd);
-	}
-	else
-	{
-		dup2(fd, 0);
-		close(fd);
-	}
+	if (dup_redir(fd, tokn))
+		free_sh(sh, 2);
 	free(fnam);
 	return (0);
 }
+	// if (tokn == 3 || tokn == 8)
+	// {
+	// 	dup2(fd, 1);
+	// 	close(fd);
+	// }
+	// else
+	// {
+	// 	dup2(fd, 0);
+	// 	close(fd);
+	// }
 
 int redir(t_sh *sh, char *cmd)
 {
@@ -291,6 +321,7 @@ int fork_all(t_sh *sh, char *cmd)
 	m_pid = fork();
 	if (m_pid == 0)
 	{
+		set_signal_exe();
 		exe_all(sh, cmd, 1);
 	}
 	waitpid(m_pid, &ext, 0);

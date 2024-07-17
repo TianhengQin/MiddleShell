@@ -86,3 +86,9 @@ void	free1(char *p)
 	if (p)
 		free(p);
 }
+
+void	free0(char **p)
+{
+	free(*p);
+	*p = 0;
+}

@@ -49,26 +49,48 @@ void	init_env(t_sh *sh)
 	set_pwd(sh);
 }
 
-void	set_env(t_sh *shell)
+void	set_odpwd(t_sh *shell)
 {
-	int		i;
+	int	i;
 
-	init_env(shell);
 	i = find_var(shell->env, "OLDPWD=");
 	if (i >= 0)
 		shell->odpwd = sdup(shell->env[i] + 7);
 	else
 		shell->odpwd = sdup(shell->pwd);
-	i = find_var(shell->env, "USER=");
-	if (i >= 0)
-		shell->user = sdup(shell->env[i] + 5);
-	else
-		shell->user = sdup("(x л x)");
+}
+
+void	set_home(t_sh *shell)
+{
+	int	i;
+
 	i = find_var(shell->env, "HOME=");
 	if (i >= 0)
 		shell->home = sdup(shell->env[i] + 5);
 	else
 		shell->home = sdup("");
+}
+
+void	set_user(t_sh *shell)
+{
+	int	i;
+
+	i = find_var(shell->env, "USER=");
+	if (i >= 0)
+		shell->user = sdup(shell->env[i] + 5);
+	else
+		shell->user = sdup("(x л x)");
+
+}
+
+void	set_env(t_sh *shell)
+{
+	int		i;
+
+	init_env(shell);
+	set_odpwd(shell);
+	set_user(shell);
+	set_home(shell);
 	i = find_var(shell->env, "PATH=");
 	if (i >= 0)
 		shell->evpth = ft_split(shell->env[find_var(shell->env, "PATH=")] + 5, ":");

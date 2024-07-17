@@ -8,7 +8,7 @@ EXE		= exe_all exe_and exe_one exe_or exe_pipe
 
 # RLOD	= dequo quo quo1 loadio
 
-# SIG		= signal signal1
+SIG		= signal signal1
 
 # SPLT	= splitcmd eachcmd
 

@@ -49,7 +49,7 @@ int val_tokn(int tokn, int prev, t_sh *sh)
     return 0;
 }
 
-void here_doc(t_sh *sh, char *dlm)
+int here_doc(t_sh *sh, char *dlm)
 {
     int hd;
     char *line;
@@ -58,7 +58,7 @@ void here_doc(t_sh *sh, char *dlm)
     if (hd < 0)
     {
         perror("heredoc:");
-        return ;
+        return (1);
     }
     // printf("dlm %s\n", dlm);
     while (1)
@@ -80,6 +80,14 @@ void here_doc(t_sh *sh, char *dlm)
 	}
     close(hd);
     (sh->hirdoc)[10] = (sh->hirdoc)[10] + 1;
+    if (g_s == 2)
+    {
+        dup2(sh->stdi, 0);
+        sh->exit_c = 1;
+        g_s = 0;
+        return (1);
+    }
+    return (0);
 }
 
 int check(t_sh *sh, char *cmd)
@@ -110,8 +118,11 @@ int check(t_sh *sh, char *cmd)
             free2(cmds);
             return (0);
         }
-        if (sh->tokn == 9)
-            here_doc(sh, cmds[i]);
+        if (sh->tokn == 9 && here_doc(sh, cmds[i]))
+        {
+            free2(cmds);
+            return (0);
+        }
         sh->tokn = tokn;
     }
     if (sh->lp > sh->rp || tokn > 2)
