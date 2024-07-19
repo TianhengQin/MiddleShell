@@ -49,10 +49,30 @@ int val_tokn(int tokn, int prev, t_sh *sh)
     return 0;
 }
 
+int input_line(int hd, char *dlm)
+{
+    char *line;
+
+    line = readline("heredoc> ");
+    if (!line)
+    {
+        write(1,"\n",1);
+        return (1);
+    }
+    if (sncmp(line, dlm, 2147483647) == 0)
+    {
+        free(line);
+        return (1);
+    }
+    write(hd, line, len(line));
+    write(hd, "\n", 1);
+    free(line);
+    return (0);
+}
+
 int here_doc(t_sh *sh, char *dlm)
 {
     int hd;
-    char *line;
 
 	hd = open(sh->hirdoc, O_CREAT | O_WRONLY | O_TRUNC, 00644);
     if (hd < 0)
@@ -63,20 +83,8 @@ int here_doc(t_sh *sh, char *dlm)
     // printf("dlm %s\n", dlm);
     while (1)
 	{
-		line = readline("heredoc> ");
-		if (!line)
-		{
-			write(1,"\n",1);
-			break ;
-		}
-		if (sncmp(line, dlm, 2147483647) == 0)
-		{
-			free(line);
-			break ;
-		}
-		write(hd, line, len(line));
-        write(hd, "\n", 1);
-		free(line);
+        if (input_line(hd, dlm))
+            break ;
 	}
     close(hd);
     (sh->hirdoc)[10] = (sh->hirdoc)[10] + 1;
@@ -90,26 +98,40 @@ int here_doc(t_sh *sh, char *dlm)
     return (0);
 }
 
+void    init_check(t_sh *sh, char *cmd, char ***cmds)
+{
+    reload(sh, cmd);
+    *cmds = ft_split(sh->bf, RSS);
+    if (!(*cmds))
+        free_sh(sh, 2);
+    sh->tokn = -1;
+    sh->lp = 0;
+    sh->rp = 0;
+    sh->hirdoc[10] = 'A';
+}
+
+int check_end(t_sh *sh, int tokn, char **cmds)
+{
+    if (sh->lp > sh->rp || tokn > 2)
+    {
+        fprint(2, "minish: parse error near `\\n'\n");
+        free2(cmds);
+        sh->exit_c = 2;
+        return (1);
+    }
+    return (0);
+}
+
 int check(t_sh *sh, char *cmd)
 {
     char **cmds;
     int i;
     int tokn;
 
-    reload(sh, cmd);
-    cmds = ft_split(sh->bf, RSS);
-    if (!cmds)
-        free_sh(sh, 2);
+    init_check(sh, cmd, &cmds);
     i = -1;
-    sh->tokn = -1;
-    sh->lp = 0;
-    sh->rp = 0;
-    sh->hirdoc[10] = 'A';
-    if (!sh->hirdoc)
-        free_sh(sh, 2);
     while (cmds[++i])
     {
-        // fprint(1, "[%s]",cmds[i]);
         tokn = mrge_tokn(is_tokn(cmds[i]));
         if (val_tokn(tokn, sh->tokn, sh))
         {
@@ -119,20 +141,11 @@ int check(t_sh *sh, char *cmd)
             return (0);
         }
         if (sh->tokn == 9 && here_doc(sh, cmds[i]))
-        {
-            free2(cmds);
-            return (0);
-        }
+            return (free2re(cmds, 0));
         sh->tokn = tokn;
     }
-    if (sh->lp > sh->rp || tokn > 2)
-    {
-        fprint(2, "minish: parse error near `\\n'\n");
-        free2(cmds);
-        sh->exit_c = 2;
+    if (check_end(sh, tokn, cmds))
         return (0);
-    }
-    // fprint(1, "\n");
     free2(cmds);
     return (1);
 }

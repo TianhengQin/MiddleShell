@@ -120,12 +120,28 @@ int check_malloc(t_sh *sh, char *s1, char *s2, int i)
     return (0);
 }
 
+void    change_(t_sh *sh, char *cmd)
+{
+    int i;
+
+    i = len(cmd);
+    i--;
+    while (i >= 0 && cmd[i] == RS)
+        i--;
+    while (i >= 0 && cmd[i] != RS)
+        i--;
+    char *tmp = sdupr(&cmd[i + 1]);
+    tmp = sjoinf2("_=", tmp);
+    env_append(sh, tmp);
+    free(tmp);
+}
+
 int exe_all(t_sh *sh, char *cmd, int fork)
 {
     int find;
 
     if (check_malloc(sh, cmd, 0, 0) == -1)
-        return (12);
+        return (-1);
     find = split_token(cmd);
     if (find % 10 == 1)
         sh->exit_c = exe_and(sh, sdup(cmd), sdup(cmd + find / 10 + 1));

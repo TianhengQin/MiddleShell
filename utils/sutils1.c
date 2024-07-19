@@ -76,3 +76,15 @@ char	*sdupr(const char *src)
 	dup[i] = 0;
 	return (dup);
 }
+
+int	lenr(const char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0' && str[i] != RS)
+	{
+		i++;
+	}
+	return (i);
+}

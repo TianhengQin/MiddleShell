@@ -13,6 +13,16 @@ int is_wikd(char *cmd)
     return (0);
 }
 
+void    decode_quo(char *p, char *re, int i, int *j)
+{
+    if (p[i] == '\22')
+        re[(*j)++] = '\'';
+    else if (p[i] == '\23')
+        re[(*j)++] =  '"';
+    else
+        re[(*j)++] =  p[i];
+}
+
 char *empt_arg(char *p)
 {
     int i;
@@ -20,10 +30,7 @@ char *empt_arg(char *p)
     char *re;
     int quo;
 
-    i = 0;
-    while (p[i] != RS)
-		i++;
-    re = malloc(i + 1);
+    re = malloc(lenr(p) + 1);
     if (!re)
         return (0);
     i = -1;
@@ -37,18 +44,13 @@ char *empt_arg(char *p)
         else if (quo)
             re[j++] =  p[i];
 		else
-		{
-            if (p[i] == '\22')
-                re[j++] = '\'';
-            else if (p[i] == '\23')
-                re[j++] =  '"';
-            else
-                re[j++] =  p[i];
-		}
+            decode_quo(p, re, i, &j);
     }
     re[j] = 0;
     return (re);
 }
+
+
 
 int match_wikd_all(char *s, char *p, int ls, int lp)
 {
@@ -81,7 +83,7 @@ int match_wikd_all(char *s, char *p, int ls, int lp)
             return 0;
         pIdx++;
     }
-    return 1;
+    return (1);
 }
 
 int match_wikd(char *s, char *p)

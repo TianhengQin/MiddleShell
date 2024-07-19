@@ -12,6 +12,22 @@
 
 #include "shell.h"
 
+int	free2re(char **cs, int re)
+{
+	int	i;
+
+	if (!cs)
+		return (re);
+	i = 0;
+	while (cs[i])
+	{
+		free(cs[i]);
+		i++;
+	}
+	free(cs);
+	return (re);
+}
+
 void	free2(char **cs)
 {
 	int	i;

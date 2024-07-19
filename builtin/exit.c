@@ -112,5 +112,5 @@ void	run_exit(t_sh *sh, char **cs)
 	{
 		sh->exit_c = ati(cs[1]);
 	}
-	sh->runing = 0;
+	sh->runing = -1;
 }

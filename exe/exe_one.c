@@ -74,7 +74,9 @@ int fork_exe(t_sh *sh, char **cs)
 	m_pid = fork();
 	if (m_pid == 0)
 	{
-		set_signal_exe();
+		set_signal_exe(cs[0]);
+		// if (sncmp(cs[0],"man",4) == 0)
+		// 	signal(SIGQUIT, SIG_IGN);
 		pth = get_pth(sh->pwd, sh->evpth, cs[0]);
 		if (!pth)
 		{
@@ -126,9 +128,10 @@ int	run_cmd(t_sh *sh, char **cs, int fork)
 
 int run_one(t_sh *sh, char **cs, int fork)
 {
-    sde_trans2(cs);
     if (!cs[0])
         return (sh->exit_c);
+    sde_trans2(cs);
+    change_(sh, cs[len2(cs) - 1]);
 	if (sncmp(cs[0], "cd", 3) == 0)
 		run_cd(sh, cs);
 	else if (sncmp(cs[0], "echo", 5) == 0)
@@ -321,7 +324,7 @@ int fork_all(t_sh *sh, char *cmd)
 	m_pid = fork();
 	if (m_pid == 0)
 	{
-		set_signal_exe();
+		// set_signal_exe();
 		exe_all(sh, cmd, 1);
 	}
 	waitpid(m_pid, &ext, 0);
@@ -334,7 +337,7 @@ int exe_one(t_sh *sh, char *cmd)
 	char **cmds;
 
 	if (check_malloc(sh, cmd, 0, 0) == -1)
-		return (12);
+		return (-1);
     cmds = split(cmd, "|");
 	if (!cmds)
 	{

@@ -20,7 +20,7 @@ void one_fork(t_sh *sh, char **cs)
         free_sh(sh, 2);
     else if (sh->pid[sh->i] == 0)
     {
-        set_signal_exe();
+        // set_signal_exe();
         if (sh->i > 0)
         {
             if (dup2(sh->pip[2 * (sh->i - 1)], 0) == -1)
@@ -76,7 +76,7 @@ int exe_pip(t_sh *sh, char **cs)
         // ext = 0;
         // while (ext < 1000)
         //     ext++;
-        usleep(100);
+        // usleep(100);
 	    one_fork(sh, cs);
     }
     close_pip(sh->pip, sh->len);

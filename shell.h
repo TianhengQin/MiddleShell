@@ -88,6 +88,7 @@ char		*sjoin2(int size, char **strs, char *sep);
 int		len(const char *str);
 int		len2(char **str);
 int		len3(char ***css);
+int	lenr(const char *str);
 char		**ft_split(char const *s, char *c);
 char	**split(char const *s, char *c);
 char		*sdup(const char *src);
@@ -114,7 +115,7 @@ void		set_pwd(t_sh *sh);
 //signal
 void		set_signal_b(void);
 void		set_signal_a(void);
-void		set_signal_exe(void);
+void		set_signal_exe(char *cs);
 void		rm_signal(void);
 // void		sig_quit(int sig);
 // void		sig_newline(int sig);
@@ -127,6 +128,8 @@ int is_tokn(char *s);
 char *load_var(t_sh *sh, char *cmd);
 char *load_wikd(t_sh *sh, char *cmd);
 char *repls_wikd(t_sh *sh, char *cmd);
+void    change_(t_sh *sh, char *cmd);
+
 
 char	trans(char c, int splt);
 void sde_trans(char *c);
@@ -195,6 +198,8 @@ void		free3(char ***css);
 char		*free_sh(t_sh *sh, int if_exit);
 void		free_cmd(char *cmd, char ***css, t_sh *sh);
 void		free_fail(t_sh *sh, char **cs);
+int	free2re(char **cs, int re);
+
 //error
 int			error_code(int ext);
 //debug

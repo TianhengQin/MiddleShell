@@ -46,7 +46,7 @@ char sp2dc(char c)
 {
     if (is_in(" \t\v\f\r\n", c))
         return ('\36');
-    return c;
+    return (c);
 }
 
 /*
@@ -96,7 +96,7 @@ void init_bf(t_sh *sh)
     sh->bf[0] = 0;
 }
 
-char *reload(t_sh *sh, char *cmd)
+void    init_reload(t_sh *sh)
 {
     init_bf(sh);
 	sh->i = -1;
@@ -104,6 +104,24 @@ char *reload(t_sh *sh, char *cmd)
 	sh->quo = 0;
     apend_bf(sh, RS);
     sh->hd_inx = 'A';
+}
+
+void apend_tokn(t_sh *sh, char *cmd)
+{
+    apend_bf(sh, RS);
+    if (sh->tokn > 5)
+        apend_bf(sh, cmd[(sh->i)++]);
+    if (sh->tokn > 10)
+        apend_bf(sh, cmd[(sh->i)++]);
+    apend_bf(sh, cmd[sh->i]);
+    if (sh->tokn == 9)
+        apend_bf(sh, (sh->hd_inx)++);
+    apend_bf(sh, RS);
+}
+
+char *reload(t_sh *sh, char *cmd)
+{
+    init_reload(sh);
 	while (cmd[++(sh->i)])
 	{
 		sh->quo = check_quo(sh->quo, cmd[sh->i], 0);
@@ -114,20 +132,12 @@ char *reload(t_sh *sh, char *cmd)
             sh->tokn = is_tokn(&cmd[sh->i]);
             if (sh->tokn)
             {
-                apend_bf(sh, RS);
-                if (sh->tokn > 5)
-                    apend_bf(sh, cmd[(sh->i)++]);
-                if (sh->tokn > 10)
-                    apend_bf(sh, cmd[(sh->i)++]);
-                apend_bf(sh, cmd[sh->i]);
-                if (sh->tokn == 9)
-                    apend_bf(sh, (sh->hd_inx)++);
-                apend_bf(sh, RS);
+                apend_tokn(sh, cmd);
             }
             else
                 apend_bf(sh, sp2dc(cmd[sh->i]));
 		}
 	}
     apend_bf(sh, RS);
-    return 0;
+    return (0);
 }

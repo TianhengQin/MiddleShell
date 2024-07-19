@@ -68,7 +68,7 @@ void	del_hirdoc(t_sh *sh)
 	}
 }
 
-void	pre(t_sh *sh)
+void	get_cmd(t_sh *sh)
 {
 	sh->stdi = dup(0);
 	del_hirdoc(sh);
@@ -79,32 +79,42 @@ void	pre(t_sh *sh)
 	free(sh->p);
 }
 
+void	check_empty(t_sh *sh)
+{
+	sh->runing = 1;
+	if (!sh->cmd)
+	{
+		if (g_s == 2)
+		{
+			write(1, "\n", 1);
+			dup2(sh->stdi, 0);
+			close(sh->stdi);
+			g_s = 0;
+			sh->exit_c = 1;
+			sh->runing = 2;
+		}
+		else
+			sh->runing = 0;
+		return ;
+	}
+	if (!sh->cmd[0] || all_sp(sh->cmd))
+	{
+		free0(&sh->cmd);
+		sh->runing = 2;
+	}
+}
+
 void	run_shell(t_sh *sh)
 {
     sh->runing = 1;
-	while (sh->runing)
+	while (sh->runing > 0)
 	{
-		pre(sh);
-		if (!sh->cmd)
-		{
-			if (g_s == 2)
-			{
-				write(1, "\n", 1);
-				dup2(sh->stdi, 0);
-				close(sh->stdi);
-				g_s = 0;
-				sh->exit_c = 1;
-				continue ;
-			}
-			else
-				break ;
-		}
-		if (!sh->cmd[0] || all_sp(sh->cmd))
-		{
-			free0(&sh->cmd);
-            continue;
-		}
-		save_history(sh->cmd);
+		get_cmd(sh);
+		check_empty(sh);
+		if (sh->runing == 2)
+			continue ;
+		else if (sh->runing == 0)
+			break ;
 		if (!check(sh, sh->cmd))
 		{
 			free0(&sh->cmd);
@@ -114,7 +124,7 @@ void	run_shell(t_sh *sh)
 		free(sh->cmd);
 		sh->cmd = sdup(sh->bf);
 		set_signal_a();
-        if (exe_all(sh, sh->cmd, 0) == 12)
+        if (exe_all(sh, sh->cmd, 0) == -1)
 		{
 			del_hirdoc(sh);
 			free_sh(sh, 2);
@@ -155,13 +165,15 @@ int	all(char **env)
 	sh.bf_sz = BF_SZ;
 	if (!sh.bf || !sh.hirdoc)
 		free_sh(&sh, 2);
-	load_history(&sh);
+	// load_history(&sh);
 	init_bf(&sh);
 	if (env[0])
 		set_env(&sh);
 	else
 		set_no_env(&sh);
 	run_shell(&sh);
+	if (sh.runing >= 0)
+		write(1, "exit\n", 5);
 	del_hirdoc(&sh);
 	free_sh(&sh, 0);
 	return (sh.exit_c);
@@ -175,5 +187,6 @@ int	main(int argi, char **argv, char **env)
 	(void)argv;
 	exit = all(env);
 	// sleep(10);
+				// write(1, "\n", 1);
 	return (exit);
 }
