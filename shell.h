@@ -115,6 +115,8 @@ void		set_pwd(t_sh *sh);
 //signal
 void		set_signal_b(void);
 void		set_signal_a(void);
+void	set_signal_h(void);
+
 void		set_signal_exe(char *cs);
 void		rm_signal(void);
 // void		sig_quit(int sig);

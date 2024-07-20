@@ -14,10 +14,17 @@
 
 void	ctrl_c(int sig)
 {
-	// write(1, "\n", 1);
-	// rl_on_new_line();
-	// rl_replace_line("", 0);
-	// rl_redisplay();
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	// close(0);
+	// printf("%d\n", sig);
+	g_s = sig;
+}
+
+void	ctrl_d(int sig)
+{
 	close(0);
 	// printf("%d\n", sig);
 	g_s = sig;
@@ -53,6 +60,17 @@ void	set_signal_a(void)
 	struct sigaction	sb;
 
 	sa.sa_handler = SIG_IGN;
+	sb.sa_handler = SIG_IGN;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sb, NULL);
+}
+
+void	set_signal_h(void)
+{
+	struct sigaction	sa;
+	struct sigaction	sb;
+
+	sa.sa_handler = ctrl_d;
 	sb.sa_handler = SIG_IGN;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sb, NULL);

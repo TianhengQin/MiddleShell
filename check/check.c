@@ -56,7 +56,7 @@ int input_line(int hd, char *dlm)
     line = readline("heredoc> ");
     if (!line)
     {
-        write(1,"\n",1);
+        // write(1,"\n",1);
         return (1);
     }
     if (sncmp(line, dlm, 2147483647) == 0)
@@ -81,6 +81,8 @@ int here_doc(t_sh *sh, char *dlm)
         return (1);
     }
     // printf("dlm %s\n", dlm);
+    sh->stdi = dup(0);
+
     while (1)
 	{
         if (input_line(hd, dlm))
@@ -91,10 +93,12 @@ int here_doc(t_sh *sh, char *dlm)
     if (g_s == 2)
     {
         dup2(sh->stdi, 0);
+        close(sh->stdi);
         sh->exit_c = 1;
         g_s = 0;
         return (1);
     }
+    close(sh->stdi);
     return (0);
 }
 
