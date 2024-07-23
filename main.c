@@ -6,7 +6,7 @@
 /*   By: tiqin <tiqin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 03:31:37 by tiqin             #+#    #+#             */
-/*   Updated: 2023/11/18 10:44:05 by tiqin            ###   ########.fr       */
+/*   Updated: 2024/07/24 01:17:00 by tiqin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,11 @@ void	get_cmd(t_sh *sh)
 	sh->p = get_prompt(sh);
 	// fprint(1, "%s\n",sh->p);
 	set_signal_b();
-	sh->cmd = readline(sh->p);
+	// sh->cmd = readline(sh->p);
+	if (isatty(0))
+		sh->cmd = readline(sh->p);
+	else
+		sh->cmd = read_line(sh, 0);
 	free(sh->p);
 }
 
@@ -122,7 +126,7 @@ void	run_shell(t_sh *sh)
 			continue ;
 		else if (sh->runing == 0)
 			break ;
-		save_history(sh->cmd);
+		// save_history(sh->cmd);
 		set_signal_h();
 		if (!check(sh, sh->cmd))
 		{
@@ -132,12 +136,14 @@ void	run_shell(t_sh *sh)
 		free(sh->cmd);
 		sh->cmd = sdup(sh->bf);
 		set_signal_a();
-        if (exe_all(sh, sh->cmd, 0) == -1)
+		exe_all(sh, sh->cmd, 0);
+        if (sh->malloc == 1)
 		{
 			del_hirdoc(sh);
 			free_sh(sh, 2);
 		}
 	}
+	// printf("exit\n");
 }
 
 void load_history(t_sh *sh)
@@ -166,6 +172,7 @@ int	all(char **env)
 {
 	t_sh	sh;
 
+	sh.malloc = 0;
 	sh.exit_c = 0;
 	sh.hirdoc = sdup(HERE_DOC);
 	sh.env = env;
@@ -173,15 +180,15 @@ int	all(char **env)
 	sh.bf_sz = BF_SZ;
 	if (!sh.bf || !sh.hirdoc)
 		free_sh(&sh, 2);
-	load_history(&sh);
+	// load_history(&sh);
 	init_bf(&sh);
 	if (env[0])
 		set_env(&sh);
 	else
 		set_no_env(&sh);
 	run_shell(&sh);
-	if (sh.runing >= 0)
-		write(1, "exit\n", 5);
+	// if (sh.runing >= 0)
+	// 	write(1, "exit\n", 5);
 	del_hirdoc(&sh);
 	free_sh(&sh, 0);
 	return (sh.exit_c);

@@ -103,6 +103,19 @@ int match_wikd(char *s, char *p)
     return re;
 }
 
+int is_hiden(char *wikd)
+{
+    if (wikd[0] == '.')
+        return (1);
+    if (wikd[0] == '"' || wikd[0] == '\'')
+    {
+        if (wikd[1] == '.')
+            return (1);
+    }
+    return (0);
+}
+
+
 void apend_wikd(t_sh *sh, char *wikd)
 {
     struct dirent *dent;
@@ -120,7 +133,7 @@ void apend_wikd(t_sh *sh, char *wikd)
         match = match_wikd(dent->d_name, wikd);
         if (match == 2)
             free_sh(sh, 2);
-        else if (match && (dent->d_name[0] != '.' || wikd[0] == '.'))
+        else if (match && (dent->d_name[0] != '.' || is_hiden(wikd)))
         {
             // printf(" match");
             sh->tokn = 1;

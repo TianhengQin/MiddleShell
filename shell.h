@@ -6,7 +6,7 @@
 /*   By: tiqin <tiqin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 03:31:59 by tiqin             #+#    #+#             */
-/*   Updated: 2023/11/10 12:29:53 by tiqin            ###   ########.fr       */
+/*   Updated: 2024/07/24 01:16:29 by tiqin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef struct s_sh
 	int			rp;
 	char		*hirdoc;
 	char		hd_inx;
+	int			malloc;
 }	t_sh;
 
 //utils

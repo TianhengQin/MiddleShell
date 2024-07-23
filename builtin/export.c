@@ -6,7 +6,7 @@
 /*   By: tiqin <tiqin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 22:25:40 by tiqin             #+#    #+#             */
-/*   Updated: 2023/11/16 02:32:05 by tiqin            ###   ########.fr       */
+/*   Updated: 2024/07/24 00:54:23 by tiqin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,4 +129,5 @@ void	run_export(t_sh *sh, char **cs)
 		env_append(sh, tofind);
 		free(tofind);
 	}
+	set_envpth(sh);
 }

@@ -6,7 +6,7 @@
 /*   By: tiqin <tiqin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 18:28:12 by tiqin             #+#    #+#             */
-/*   Updated: 2024/07/20 18:28:17 by tiqin            ###   ########.fr       */
+/*   Updated: 2024/07/24 01:02:13 by tiqin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ int val_tokn(int tokn, int prev, t_sh *sh)
         return 1;
     if (tokn == 2 && (prev == -1 || prev == 1 || prev > 2))
         return 1;
-    if ((tokn == 3 || tokn == 4 || tokn == 8 || tokn == 9) && (prev == 3 || prev == 4 || prev == 8 || prev == 9))
+    if ((tokn == 3 || tokn == 4 || tokn == 8 || tokn == 9)
+        && (prev == 3 || prev == 4 || prev == 8 || prev == 9))
         return 1;
     if (tokn == 5 && (prev == -1 || prev == 1 || prev > 2))
         return 1;

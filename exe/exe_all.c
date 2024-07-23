@@ -6,7 +6,7 @@
 /*   By: tiqin <tiqin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/20 18:28:42 by tiqin             #+#    #+#             */
-/*   Updated: 2024/07/20 18:28:43 by tiqin            ###   ########.fr       */
+/*   Updated: 2024/07/24 01:18:35 by tiqin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,13 +111,13 @@ int trm_prth(char *s)
 
 int check_malloc(t_sh *sh, char *s1, char *s2, int i)
 {
-    (void)sh;
     if (i)
     {
         if (!s1 || !s2)
         {
             free1(s1);
             free1(s2);
+            sh->malloc = 1;
             return (-1);
         }
     }
@@ -126,6 +126,7 @@ int check_malloc(t_sh *sh, char *s1, char *s2, int i)
         if (!s1)
         {
             free(s1);
+            sh->malloc = 1;
             return (-1);
         }
     }
