@@ -64,7 +64,8 @@ void	run_env(t_sh *sh, char **cs)
 	i = 0;
 	while (sh->env[i])
 	{
-		fprint(1, "%s\n", sh->env[i]);
+		if (is_in(sh->env[i], '='))
+			fprint(1, "%s\n", sh->env[i]);
 		i++;
 	}
 	sh->exit_c = 0;

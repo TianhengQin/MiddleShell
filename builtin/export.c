@@ -42,12 +42,12 @@ int	is_none(char *env)
 	int	i;
 
 	i = 0;
-	while (env[i] != '=')
+	while (env[i] && env[i] != '=')
 	{
 		i++;
 	}
 	i++;
-	if (env[i])
+	if (env[i] || env[i - 1] != '=')
 		return (0);
 	else
 		return (1);
@@ -109,6 +109,8 @@ void	run_export(t_sh *sh, char **cs)
 {
 	char	*tofind;
 	int		i;
+	int		v;
+	int		w;
 
 	sh->exit_c = 0;
 	if (!cs[1])
@@ -119,14 +121,22 @@ void	run_export(t_sh *sh, char **cs)
 	i = 0;
 	while (cs[++i])
 	{
-		if (valid_exp(cs[i]))
+		v = valid_exp(cs[i]);
+		if (v < 0)
 		{
 			fprint(2, "export: `%s': not a valid identifier\n", cs[i]);
 			sh->exit_c = 1;
 			continue ;
 		}
 		tofind = prase_exp(cs[i]);
-		env_append(sh, tofind);
+		w = find_var(sh->env, tofind);
+		if (v == 1 || (v == 0 && w < 0))
+			env_append(sh, tofind);
+		if (v == 0 && w < 0)
+		{
+			v = find_var(sh->env, tofind);
+			sh->env[v][len(sh->env[v]) - 1] = 0;
+		}
 		free(tofind);
 	}
 	set_envpth(sh);

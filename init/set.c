@@ -16,6 +16,7 @@ int	find_var(char **str, char *s)
 {
 	int		i;
 	int	len;
+	int	diff;
 
 	i = 0;
 	len = 0;
@@ -24,7 +25,8 @@ int	find_var(char **str, char *s)
 	len++;
 	while (str[i])
 	{
-		if (sncmp(str[i], s, len) == 0)
+		diff = sncmp(str[i], s, len);
+		if (diff == 0 || diff == -61)
 			return (i);
 		i++;
 	}

@@ -188,7 +188,7 @@ int	all(char **env)
 		set_no_env(&sh);
 	run_shell(&sh);
 	// if (sh.runing >= 0)
-	// 	write(1, "exit\n", 5);
+		// write(1, "exit\n", 5);
 	del_hirdoc(&sh);
 	free_sh(&sh, 0);
 	return (sh.exit_c);

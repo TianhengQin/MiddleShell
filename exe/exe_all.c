@@ -136,6 +136,7 @@ int check_malloc(t_sh *sh, char *s1, char *s2, int i)
 void    change_(t_sh *sh, char *cmd)
 {
     int i;
+    char *tmp;
 
     i = len(cmd);
     i--;
@@ -143,7 +144,7 @@ void    change_(t_sh *sh, char *cmd)
         i--;
     while (i >= 0 && cmd[i] != RS)
         i--;
-    char *tmp = sdupr(&cmd[i + 1]);
+    tmp = sdupr(&cmd[i + 1]);
     tmp = sjoinf2("_=", tmp);
     env_append(sh, tmp);
     free(tmp);
