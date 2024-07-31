@@ -155,7 +155,7 @@ int exe_all(t_sh *sh, char *cmd, int fork)
     int find;
 
     if (check_malloc(sh, cmd, 0, 0) == -1)
-        return (-1);
+        return (12);
     find = split_token(cmd);
     if (find % 10 == 1)
         sh->exit_c = exe_and(sh, sdup(cmd), sdup(cmd + find / 10 + 1));

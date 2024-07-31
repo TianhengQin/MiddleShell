@@ -3,7 +3,7 @@
 int exe_and(t_sh *sh, char *cmd1, char *cmd2)
 {
     if (check_malloc(sh, cmd1, cmd2, 2) == -1)
-        return (-1);
+        return (12);
     // printf("--- and: %s --- %s\n",cmd1, cmd2);
     sh->exit_c = exe_all(sh, sdup(cmd1), 0);
     free(cmd1);

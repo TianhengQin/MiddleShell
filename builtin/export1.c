@@ -36,6 +36,8 @@ int	valid_exp(char *s)
 	i = 0;
 	while (is_apha(s[i]))
 		i++;
+	if (i == 0)
+		return (-1);
 	if (s[i] == 0)
 		return (0);
 	if (s[i] == '=')
