@@ -30,7 +30,7 @@
 # define RSS "\36"
 # define BF_SZ 8192
 
-long long	g_s;
+extern long long	g_s;
 
 typedef struct s_sh
 {

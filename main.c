@@ -12,6 +12,8 @@
 
 #include "shell.h"
 
+long long	g_s;
+
 char	*get_prompt(t_sh *shell)
 {
 	char	*a;
