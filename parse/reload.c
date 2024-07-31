@@ -138,6 +138,10 @@ char *reload(t_sh *sh, char *cmd)
                 apend_bf(sh, sp2dc(cmd[sh->i]));
 		}
 	}
+    if (sh->quo == 1)
+        apend_bf(sh, '\'');
+    else if (sh->quo == 2)
+        apend_bf(sh, '"');
     apend_bf(sh, RS);
     return (0);
 }

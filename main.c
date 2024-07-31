@@ -138,6 +138,7 @@ void	run_shell(t_sh *sh)
 		free(sh->cmd);
 		sh->cmd = sdup(sh->bf);
 		set_signal_a();
+		
 		exe_all(sh, sh->cmd, 0);
         if (sh->malloc == 1)
 		{
