@@ -37,6 +37,7 @@ typedef struct s_sh
 	char		*pwd;
 	char		*odpwd;
 	char		**env;
+	char		**envexe;
 	char		*home;
 	char		*user;
 	char		**evpth;
@@ -158,6 +159,7 @@ char		***splt3(char ***css);
 // int			check(char *s, char ***css, t_sh *sh);
 int			ck_start(char *cmd);
 //exe
+char **bdenv(char **env);
 int exe_all(t_sh *sh, char *cmd, int fork);
 int exe_and(t_sh *sh, char *cmd1, char *cmd2);
 int exe_one(t_sh *sh, char *cmd);

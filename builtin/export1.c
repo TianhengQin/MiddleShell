@@ -44,3 +44,32 @@ int	valid_exp(char *s)
 		return (2);
 	return (-1);
 }
+
+char **bdenv(char **env)
+{
+	char	**exe;
+	int		len;
+	int		i;
+	int		j;
+
+	len = len2(env);
+	exe = malloc(sizeof(char *) * (len + 1));
+	if (!exe)
+		return (0);
+	j = -1;
+	i = 0;
+	while (env[++j])
+	{
+		if (is_in(env[j], '='))
+		{
+			exe[i] = sdup(env[j]);
+			if (!exe[i++])
+			{
+				free2(exe);
+				return (0);
+			}
+		}
+	}
+	exe[i] = 0;
+	return (exe);
+}

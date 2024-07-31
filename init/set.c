@@ -48,6 +48,7 @@ void	init_env(t_sh *sh)
 	while (sh->env[++i])
 		re[i] = sdup(sh->env[i]);
 	sh->env = re;
+	sh->pwd = 0;
 	set_pwd(sh);
 }
 
@@ -99,8 +100,9 @@ void	set_env(t_sh *shell)
 	else
 		shell->evpth = 0;
 	shell->runing = 1;
-	if (find_var(shell->env, "SHLVL=") >= 0)
-		shell->env[find_var(shell->env, "SHLVL=")][6]++;
+	i = find_var(shell->env, "SHLVL=");
+	if (i >= 0 && (shell->env[i][6] >= '0' && shell->env[i][6] <= '9'))
+		shell->env[i][6]++;
 	else
 		env_append(shell, "SHLVL=1");
 	shell->exit_c = 0;

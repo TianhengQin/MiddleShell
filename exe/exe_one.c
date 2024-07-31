@@ -74,12 +74,12 @@ int fork_exe(t_sh *sh, char **cs)
 	int		ext;
 
 	m_pid = fork();
+	pth = get_pth(sh->pwd, sh->evpth, cs[0]);
+	if (len2(cs) == 1 && pth)
+		change_(sh, pth);
 	if (m_pid == 0)
 	{
 		set_signal_exe(cs[0]);
-		// if (sncmp(cs[0],"man",4) == 0)
-		// 	signal(SIGQUIT, SIG_IGN);
-		pth = get_pth(sh->pwd, sh->evpth, cs[0]);
 		if (!pth)
 		{
 			if (cs[0][0] == '.' || cs[0][0] == '/')
@@ -88,20 +88,27 @@ int fork_exe(t_sh *sh, char **cs)
 				fprint(2, "midsh: %s: command not found\n", cs[0]);
 			exit(127);
 		}
-		execve(pth, cs, sh->env);
+		sh->envexe = bdenv(sh->env);
+		if (!sh->envexe)
+			exit(12);
+		execve(pth, cs, sh->envexe);
         free(pth);
 		free_sh(sh, 0);
 		perror("midsh");
 		free2(cs);
+		free2(sh->envexe);
 		exit(126);
 	}
+	free(pth);
 	waitpid(m_pid, &ext, 0);
 	return(error_code(ext));
 }
 
 int run_exe(t_sh *sh, char **cs)
 {
-	char *pth = get_pth(sh->pwd, sh->evpth, cs[0]);
+	char *pth;
+
+	pth = get_pth(sh->pwd, sh->evpth, cs[0]);
 	if (!pth)
 	{
 		if (cs[0][0] == '.' || cs[0][0] == '/')
@@ -337,6 +344,7 @@ int fork_all(t_sh *sh, char *cmd)
 int exe_one(t_sh *sh, char *cmd)
 {
 	char **cmds;
+	char **cmdss;
 
 	if (check_malloc(sh, cmd, 0, 0) == -1)
 		return (-1);
@@ -367,7 +375,7 @@ int exe_one(t_sh *sh, char *cmd)
 				cmds[0] = load_var(sh, cmds[0]);
 				cmds[0] = repls_wikd(sh, cmds[0]);
 				cmds[0] = load_wikd(sh, cmds[0]);
-				char **cmdss = split(cmds[0], RSS);
+				cmdss = split(cmds[0], RSS);
 				if (!cmdss)
 					return (12);
 				sh->exit_c = run_one(sh, cmdss, 0);
