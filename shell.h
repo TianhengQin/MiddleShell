@@ -22,6 +22,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <fcntl.h>
+# include <sys/wait.h>
 
 # define HERE_DOC ".here_doc_A72>7!e;wL=roaso(7uN]>uO46#bI1av85:ZX<tkCl8CPR.txt"
 # define HISTORY ".midsh_history_K{0J=75+1W]7#=u}rka@D$YU6j+&1:_qnLKf+VW#M*.txt"
