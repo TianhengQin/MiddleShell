@@ -42,7 +42,7 @@ CC		= cc
 all:$(NAME)
 
 $(NAME):$(OBJS)
-		$(CC) $(CFLAGS) -lreadline $(OBJS) -o $(NAME)
+		$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -lreadline
 
 re:fclean all
 
