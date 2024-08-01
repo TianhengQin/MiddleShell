@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #include "shell.h"
-
-long long	g_s;
+#include "global.h"
 
 char	*get_prompt(t_sh *shell)
 {
