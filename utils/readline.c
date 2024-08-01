@@ -11,11 +11,11 @@ char *read_line(t_sh *sh, int fd)
         re = read(fd, &a, 1);
         // printf("rad %d\n", re);
         if (re < 0)
-            return 0;
+            return (0);
         if (re == 0 && sh->bf_inx == 0)
             return (0);
         if (re == 0 || a == '\n')
-            return sdup(sh->bf);
+            return (sdup(sh->bf));
         else
             apend_bf(sh, a);
     }
