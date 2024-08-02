@@ -69,10 +69,12 @@ char	*get_pth(char *pwd, char **evpth, char *cs)
 
 int	free_exe(t_sh *sh, char **cs, char *pth, int ext)
 {
-	free(pth);
+	if (pth)
+		free(pth);
 	free_sh(sh, 0);
 	free2(cs);
-	free2(sh->envexe);
+	if (pth)
+		free2(sh->envexe);
 	return (ext);
 }
 
@@ -95,7 +97,7 @@ int fork_exe(t_sh *sh, char **cs)
 				fprint(2, "midsh: %s: No such file or directory\n", cs[0]);
 			else
 				fprint(2, "midsh: %s: command not found\n", cs[0]);
-			exit(free_exe(sh, cs, pth, 127));
+			exit(free_exe(sh, cs, 0, 127));
 		}
 		sh->envexe = bdenv(sh->env);
 		if (!sh->envexe)

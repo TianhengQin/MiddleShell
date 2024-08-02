@@ -34,7 +34,9 @@ int	valid_exp(char *s)
 	int	i;
 
 	i = 0;
-	while (is_apha(s[i]))
+	if (!is_apha(s[i]))
+		return (-1);
+	while (is_aphnum(s[i]))
 		i++;
 	if (i == 0)
 		return (-1);
