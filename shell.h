@@ -30,7 +30,12 @@
 # define RSS "\36"
 # define BF_SZ 8192
 
+# ifndef GLOBAL_H
+#  define GLOBAL_H
+
 extern long long	g_s;
+
+# endif
 
 typedef struct s_sh
 {
@@ -60,9 +65,9 @@ typedef struct s_sh
 	int			bf_inx;
 	int			bf_sz;
 
-	char		**bff;
-	int			bff_inx;
-	int			bff_sz;
+	char		*hbf;
+	int			hbf_inx;
+	int			hbf_sz;
 
 	char		*p;
 
@@ -82,6 +87,7 @@ typedef struct s_sh
 
 //utils
 char *read_line(t_sh *sh, int fd);
+char *read_hline(t_sh *sh, int fd);
 
 int			fprint(int fd, const char *s, ...);
 char		*sjoin(char const *s1, char const *s2);
@@ -106,7 +112,9 @@ int			is_in(char *s, char c);
 char		*trm_sp(char *s);
 //init
 void init_bf(t_sh *sh);
+void init_hbf(t_sh *sh);
 void apend_bf(t_sh *sh, char c);
+void apend_hbf(t_sh *sh, char c);
 void apends_bf(t_sh *sh, char *s);
 
 void		set_env(t_sh *shell);

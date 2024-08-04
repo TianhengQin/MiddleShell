@@ -62,11 +62,14 @@ int val_tokn(int tokn, int prev, t_sh *sh)
     return 0;
 }
 
-int input_line(int hd, char *dlm)
+int input_line(t_sh *sh, int hd, char *dlm)
 {
     char *line;
 
-    line = readline("heredoc> ");
+    if (isatty(0))
+		line = readline("heredoc> ");
+	else
+		line = read_hline(sh, 0);
     if (!line)
     {
         // write(1,"\n",1);
@@ -98,7 +101,7 @@ int here_doc(t_sh *sh, char *dlm)
 
     while (1)
 	{
-        if (input_line(hd, dlm))
+        if (input_line(sh, hd, dlm))
             break ;
 	}
     close(hd);

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "shell.h"
 #include "global.h"
+#include "shell.h"
 
 char	*get_prompt(t_sh *shell)
 {
@@ -76,7 +76,6 @@ void	get_cmd(t_sh *sh)
 	sh->p = get_prompt(sh);
 	// fprint(1, "%s\n",sh->p);
 	set_signal_b();
-	// sh->cmd = readline(sh->p);
 	if (isatty(0))
 		sh->cmd = readline(sh->p);
 	else
@@ -89,24 +88,12 @@ void	check_empty(t_sh *sh)
 	sh->runing = 1;
 	if (g_s == 2)
 	{
-
 		g_s = 0;
 		sh->exit_c = 1;
-
 	}
 	if (!sh->cmd)
 	{
-		// if (g_s == 2)
-		// {
-		// 	// write(1, "\n", 1);
-		// 	// dup2(sh->stdi, 0);
-		// 	// close(sh->stdi);
-		// 	g_s = 0;
-		// 	sh->exit_c = 1;
-		// 	sh->runing = 2;
-		// }
-		// else
-			sh->runing = 0;
+		sh->runing = 0;
 		return ;
 	}
 	if (!sh->cmd[0] || all_sp(sh->cmd))
@@ -180,7 +167,9 @@ int	all(char **env)
 	sh.env = env;
 	sh.bf = malloc(BF_SZ + 1);
 	sh.bf_sz = BF_SZ;
-	if (!sh.bf || !sh.hirdoc)
+	sh.hbf = malloc(BF_SZ + 1);
+	sh.hbf_sz = BF_SZ;
+	if (!sh.bf || !sh.hirdoc || !sh.hbf)
 		free_sh(&sh, 2);
 	// load_history(&sh);
 	init_bf(&sh);

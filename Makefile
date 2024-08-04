@@ -16,7 +16,7 @@ UTIL	= free ft_printf ft_split strjoin strjoin2 sutils sutils1 utils split readl
 
 INIT	= set setnoenv
 
-PRSE	= load_var reload dequo load_wikd
+PRSE	= load_var reload dequo load_wikd hirdoc
 
 CHCK	= check
 
