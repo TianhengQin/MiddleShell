@@ -45,7 +45,7 @@ char	*get_pth(char *pwd, char **evpth, char *cs)
 	int		i;
 
 	right_path = 0;
-	if (cs[0] == '.' || cs[0] == '/')
+	if (cs[0] == '.' || cs[0] == '/' || !evpth)
 		return (rltv_pth(pwd, cs));
 	if (access(cs, F_OK) == 0 && is_pth(cs))
 		return (sdup(cs));
