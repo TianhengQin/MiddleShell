@@ -97,6 +97,7 @@ int here_doc(t_sh *sh, char *dlm)
         return (1);
     }
     // printf("dlm %s\n", dlm);
+    dequo(dlm);
     sh->stdi = dup(0);
 
     while (1)

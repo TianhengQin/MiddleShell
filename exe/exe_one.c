@@ -204,8 +204,10 @@ int openfile(t_sh *sh, int tokn, char *file)
 	fnam = repls_wikd(sh, fnam);
 	fnam = load_wikd(sh, fnam);
 	sde_trans(fnam);
+	// fprint(2, "file name %s\n", fnam);
 	char **fnams = ft_split(fnam, RSS);
-	if (fnams[1] || !fnams[0])
+
+	if (tokn != 9 && (!fnams[0] || fnams[1]))
 	{
 		fprint(2, "midsh: ambiguous redirect\n");
 		free2(fnams);
@@ -213,7 +215,10 @@ int openfile(t_sh *sh, int tokn, char *file)
 		return (1);
 	}
 	free(fnam);
-	fnam = sdup(fnams[0]);
+	if (fnams[0])
+		fnam = sdup(fnams[0]);
+	else
+		fnam = sdup("");
 	free2(fnams);
 	// fprint(2, "file name %s\n", fnam);
 	int fd = 0;
