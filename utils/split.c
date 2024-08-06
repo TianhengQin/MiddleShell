@@ -12,7 +12,18 @@
 
 #include "shell.h"
 
-static size_t	skip_quo(char *dup, size_t i)
+void	skip_prfs(char *dup, size_t *i, int *ps)
+{
+	if (dup[*i] == 39 || dup[*i] == 34)
+		*i = skip_quo(dup, *i);
+	if (dup[*i] == '(')
+		(*ps)++;
+	else if (dup[*i] == ')')
+		(*ps)--;
+	(*i)++;
+}
+
+size_t	skip_quo(char *dup, size_t i)
 {
 	int ps;
 
@@ -33,15 +44,7 @@ static size_t	skip_quo(char *dup, size_t i)
 		i++;
 		ps = 1;
 		while (dup[i] && ps)
-		{
-			if (dup[i] == 39 || dup[i] == 34)
-				i = skip_quo(dup, i);
-			if (dup[i] == '(')
-				ps++;
-			else if (dup[i] == ')')
-				ps--;
-			i++;
-		}
+			skip_prfs(dup, &i, &ps);
 	}
 	if (dup[i])
 		return (i);
@@ -102,16 +105,6 @@ static int	w_split(char **re, char *dup, size_t len)
 	}
 	re[tot] = 0;
 	return (-1);
-}
-
-static void	free_re(char **re, int tot)
-{
-	while (tot > 0)
-	{
-		tot--;
-		free(re[tot]);
-	}
-	free(re);
 }
 
 char	**split(char const *s, char *c)

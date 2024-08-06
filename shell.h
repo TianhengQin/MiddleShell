@@ -99,6 +99,9 @@ int		len2(char **str);
 int		len3(char ***css);
 int	lenr(const char *str);
 char		**ft_split(char const *s, char *c);
+void	free_re(char **re, int tot);
+size_t	skip_quo(char *dup, size_t i);
+
 char	**split(char const *s, char *c);
 char		*sdup(const char *src);
 char		*sdupf(const char *src);

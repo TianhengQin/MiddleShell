@@ -12,7 +12,7 @@
 
 #include "shell.h"
 
-static size_t	skip_quo(char *dup, size_t i)
+static size_t	skipquo(char *dup, size_t i)
 {
 	if (dup[i] == 39)
 	{
@@ -52,7 +52,7 @@ static size_t	cut(char *dup, char *set)
 	while (dup[i])
 	{
 		if (dup[i] == 39 || dup[i] == 34)
-			i = skip_quo(dup, i);
+			i = skipquo(dup, i);
 		if (is_in(set, dup[i]))
 		{
 			dup[i] = 0;
@@ -93,7 +93,7 @@ static int	w_split(char **re, char *dup, size_t len)
 	return (-1);
 }
 
-static void	free_re(char **re, int tot)
+void	free_re(char **re, int tot)
 {
 	while (tot > 0)
 	{
