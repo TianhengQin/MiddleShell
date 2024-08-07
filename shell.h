@@ -6,7 +6,7 @@
 /*   By: tiqin <tiqin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 03:31:59 by tiqin             #+#    #+#             */
-/*   Updated: 2024/07/24 01:16:29 by tiqin            ###   ########.fr       */
+/*   Updated: 2024/08/07 18:53:13 by tiqin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,9 +171,9 @@ char		***splt3(char ***css);
 // int			check(char *s, char ***css, t_sh *sh);
 int			ck_start(char *cmd);
 //exe
-char **bdenv(char **env);
-int exe_all(t_sh *sh, char *cmd, int fork);
-int exe_and(t_sh *sh, char *cmd1, char *cmd2);
+char		**bdenv(char **env);
+int			exe_all(t_sh *sh, char *cmd, int fork);
+int			exe_and(t_sh *sh, char *cmd1, char *cmd2);
 int exe_one(t_sh *sh, char *cmd);
 int exe_or(t_sh *sh, char *cmd1, char *cmd2);
 int exe_pip(t_sh *sh, char **cs);
