@@ -62,6 +62,25 @@ int val_tokn(int tokn, int prev, t_sh *sh)
     return 0;
 }
 
+char *hirvar(t_sh *sh, char *line)
+{
+    int i;
+    char *re;
+
+    i = 0;
+    init_hbf(sh);
+    while (line[i])
+    {
+        apend_hbf(sh, line[i]);
+        i++;
+    }
+    free(line);
+    re = sdup(sh->hbf);
+    if (!re)
+        free_sh(sh, 2);
+    return (re);
+}
+
 int input_line(t_sh *sh, int hd, char *dlm)
 {
     char *line;
@@ -80,6 +99,7 @@ int input_line(t_sh *sh, int hd, char *dlm)
         free(line);
         return (1);
     }
+    line = hirvar(sh, line);
     write(hd, line, len(line));
     write(hd, "\n", 1);
     free(line);
