@@ -50,38 +50,54 @@ char *empt_arg(char *p)
     return (re);
 }
 
+typedef struct s_wikd
+{
+    int sIdx;
+    int pIdx;
+    int lastWildcardIdx;
+    int sBacktrackIdx;
+    int nextToWildcardIdx;
+}   t_wikd;
 
+void    init_wikd(t_wikd *w)
+{
+    w->sIdx = 0;
+    w->pIdx = 0;
+    w->lastWildcardIdx = -1;
+    w->sBacktrackIdx = -1;
+    w->nextToWildcardIdx = -1;
+}
 
 int match_wikd_all(char *s, char *p, int ls, int lp)
 {
-    int sIdx = 0, pIdx = 0, lastWildcardIdx = -1,
-        sBacktrackIdx = -1, nextToWildcardIdx = -1;
-    while (sIdx < ls)
+    t_wikd w;
+    init_wikd(&w);
+    while (w.sIdx < ls)
     {
-        if (pIdx < lp && (p[pIdx] == '\21' || p[pIdx] == s[sIdx]))
+        if (w.pIdx < lp && (p[w.pIdx] == '\21' || p[w.pIdx] == s[w.sIdx]))
         {
-            ++sIdx;
-            ++pIdx;
+            ++w.sIdx;
+            ++w.pIdx;
         }
-        else if (pIdx < lp && p[pIdx] == '\24')
+        else if (w.pIdx < lp && p[w.pIdx] == '\24')
         {
-            lastWildcardIdx = pIdx;
-            nextToWildcardIdx = ++pIdx;
-            sBacktrackIdx = sIdx;
+            w.lastWildcardIdx = w.pIdx;
+            w.nextToWildcardIdx = ++w.pIdx;
+            w.sBacktrackIdx = w.sIdx;
         }
-        else if (lastWildcardIdx == -1)
+        else if (w.lastWildcardIdx == -1)
             return 0;
         else
         {
-            pIdx = nextToWildcardIdx;
-            sIdx = ++sBacktrackIdx;
+            w.pIdx = w.nextToWildcardIdx;
+            w.sIdx = ++w.sBacktrackIdx;
         }
     }
-    while (pIdx < lp)
+    while (w.pIdx < lp)
     {
-        if (p[pIdx] != '\24')
+        if (p[w.pIdx] != '\24')
             return 0;
-        pIdx++;
+        w.pIdx++;
     }
     return (1);
 }

@@ -146,27 +146,28 @@ int	apend_dolr(char *c, t_sh *sh, char splt)
 	return (len);
 }
 
-char *load_var(t_sh *sh, char *cmd)
+void	init_load_var(t_sh *sh)
 {
 	sh->i = -1;
-	sh->j = 0;
-	init_bf(sh);
 	sh->quo = 0;
+	sh->j = 0;
+}
+
+char *load_var(t_sh *sh, char *cmd)
+{
+	init_load_var(sh);
+	init_bf(sh);
 	while (cmd[++(sh->i)])
 	{
 		sh->quo = check_quo(sh->quo, cmd[sh->i], 0);
 		if (sh->quo == 1)
-		{
 			apend_bf(sh, cmd[sh->i]);
-		}
 		else if (sh->quo == 2)
 		{
 			if (cmd[sh->i] == '$' && (is_apha(cmd[sh->i + 1]) || cmd[sh->i + 1] == '?'))
 				sh->i += apend_dolr(cmd + sh->i + 1, sh, ' ');
 			else
-			{
 				apend_bf(sh, cmd[sh->i]);
-			}
 		}
 		else if (sh->quo == 0)
 		{
