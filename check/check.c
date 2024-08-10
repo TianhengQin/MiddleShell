@@ -62,6 +62,57 @@ int val_tokn(int tokn, int prev, t_sh *sh)
     return 0;
 }
 
+void	apend_hexit(t_sh *sh)
+{
+	int	exit;
+
+	exit = sh->exit_c;
+	if (exit / 100)
+	{
+		apend_hbf(sh, exit / 100 + 48);
+	}
+	if (exit / 100 || exit % 100 / 10)
+	{
+		apend_hbf(sh, exit % 100 / 10 + 48);
+	}
+	exit = exit % 10;
+	apend_hbf(sh, exit + 48);
+}
+
+void	apend_hvar(t_sh *sh, char *ev)
+{
+	int		i;
+
+	i = -1;
+	while (ev[++i])
+	{
+	    apend_hbf(sh, ev[i]);
+	}
+}
+
+int	apend_hdolr(char *c, t_sh *sh)
+{
+	int		len;
+	char	tmp;
+	int		f;
+
+	if (c[0] == '?')
+	{
+		apend_hexit(sh);
+		return (1);
+	}
+	len = 0;
+	while (is_aphnum(c[len]))
+		len++;
+	tmp = c[len];
+	c[len] = '=';
+	f = find_var(sh->env, c);
+	c[len] = tmp;
+	if (f >= 0)
+		apend_hvar(sh, &sh->env[f][len + 1]);
+	return (len);
+}
+
 char *hirvar(t_sh *sh, char *line)
 {
     int i;
@@ -71,7 +122,10 @@ char *hirvar(t_sh *sh, char *line)
     init_hbf(sh);
     while (line[i])
     {
-        apend_hbf(sh, line[i]);
+        if (line[i] == '$' && (is_apha(line[i + 1]) || line[i + 1] == '?'))
+			    i += apend_hdolr(line + i + 1, sh);
+        else
+            apend_hbf(sh, line[i]);
         i++;
     }
     free(line);
