@@ -110,12 +110,14 @@ char *repls_wikd(t_sh *sh, char *cmd)
 //     return (sdup(sh->bf));
 // }
 
-void dequo(char *c)
+int dequo(char *c)
 {
     int i;
     int j;
     int quo;
+    int re;
 
+    re = 0;
     i = -1;
     j = 0;
     quo = 0;
@@ -123,11 +125,15 @@ void dequo(char *c)
     {
         quo = check_quo(quo, c[i], 10);
         if (quo >= 10)
+        {
+            re = 1;
             quo = quo - 10;
+        }
         else
             c[j++] = c[i];
     }
     c[j] = 0;
+    return (re);
 }
 
 void dequor(char *c)

@@ -153,7 +153,8 @@ int input_line(t_sh *sh, int hd, char *dlm)
         free(line);
         return (1);
     }
-    line = hirvar(sh, line);
+    if (!sh->hd_var)
+        line = hirvar(sh, line);
     write(hd, line, len(line));
     write(hd, "\n", 1);
     free(line);
@@ -171,9 +172,8 @@ int here_doc(t_sh *sh, char *dlm)
         return (1);
     }
     // printf("dlm %s\n", dlm);
-    dequo(dlm);
+    sh->hd_var = dequo(dlm);
     sh->stdi = dup(0);
-
     while (1)
 	{
         if (input_line(sh, hd, dlm))

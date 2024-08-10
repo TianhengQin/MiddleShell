@@ -82,6 +82,7 @@ typedef struct s_sh
 	int			rp;
 	char		*hirdoc;
 	char		hd_inx;
+	int			hd_var;
 	int			malloc;
 }	t_sh;
 
@@ -150,7 +151,7 @@ void    change_(t_sh *sh, char *cmd);
 char	trans(char c, int splt);
 void sde_trans(char *c);
 void sde_trans2(char **cs);
-void dequo(char *c);
+int dequo(char *c);
 
 char		*quo(t_sh *sh, char *c);
 char		**quo2(t_sh *sh, char **cs);
