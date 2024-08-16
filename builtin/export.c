@@ -105,12 +105,37 @@ char	*prase_exp(char *cs)
 	return (re);
 }
 
-void	run_export(t_sh *sh, char **cs)
+void	each_export(t_sh *sh, char *cs)
 {
 	char	*tofind;
-	int		i;
 	int		v;
 	int		w;
+
+	v = valid_exp(cs);
+	if (v < 0)
+	{
+		fprint(2, "export: `%s': not a valid identifier\n", cs);
+		sh->exit_c = 1;
+		return ;
+	}
+	tofind = prase_exp(cs);
+	w = find_var(sh->env, tofind);
+	if (v == 1 || (v == 0 && w < 0))
+		env_append(sh, tofind);
+	if (v == 0 && w < 0)
+	{
+		v = find_var(sh->env, tofind);
+		sh->env[v][len(sh->env[v]) - 1] = 0;
+	}
+	free(tofind);
+}
+
+void	run_export(t_sh *sh, char **cs)
+{
+	// char	*tofind;
+	int		i;
+	// int		v;
+	// int		w;
 
 	sh->exit_c = 0;
 	if (!cs[1])
@@ -121,23 +146,24 @@ void	run_export(t_sh *sh, char **cs)
 	i = 0;
 	while (cs[++i])
 	{
-		v = valid_exp(cs[i]);
-		if (v < 0)
-		{
-			fprint(2, "export: `%s': not a valid identifier\n", cs[i]);
-			sh->exit_c = 1;
-			continue ;
-		}
-		tofind = prase_exp(cs[i]);
-		w = find_var(sh->env, tofind);
-		if (v == 1 || (v == 0 && w < 0))
-			env_append(sh, tofind);
-		if (v == 0 && w < 0)
-		{
-			v = find_var(sh->env, tofind);
-			sh->env[v][len(sh->env[v]) - 1] = 0;
-		}
-		free(tofind);
+		each_export(sh, cs[i]);
+		// v = valid_exp(cs[i]);
+		// if (v < 0)
+		// {
+		// 	fprint(2, "export: `%s': not a valid identifier\n", cs[i]);
+		// 	sh->exit_c = 1;
+		// 	continue ;
+		// }
+		// tofind = prase_exp(cs[i]);
+		// w = find_var(sh->env, tofind);
+		// if (v == 1 || (v == 0 && w < 0))
+		// 	env_append(sh, tofind);
+		// if (v == 0 && w < 0)
+		// {
+		// 	v = find_var(sh->env, tofind);
+		// 	sh->env[v][len(sh->env[v]) - 1] = 0;
+		// }
+		// free(tofind);
 	}
 	set_envpth(sh);
 }
