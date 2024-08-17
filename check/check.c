@@ -161,6 +161,16 @@ int input_line(t_sh *sh, int hd, char *dlm)
     return (0);
 }
 
+int reset_i(t_sh *sh)
+{
+    if (dup2(sh->stdi, 0) < 0)
+        free_sh(sh, 2);
+    close(sh->stdi);
+    sh->exit_c = 1;
+    g_s = 0;
+    return (1);
+}
+
 int here_doc(t_sh *sh, char *dlm)
 {
     int hd;
@@ -182,13 +192,7 @@ int here_doc(t_sh *sh, char *dlm)
     close(hd);
     (sh->hirdoc)[10] = (sh->hirdoc)[10] + 1;
     if (g_s == 2)
-    {
-        dup2(sh->stdi, 0);
-        close(sh->stdi);
-        sh->exit_c = 1;
-        g_s = 0;
-        return (1);
-    }
+        return (reset_i(sh));
     close(sh->stdi);
     return (0);
 }

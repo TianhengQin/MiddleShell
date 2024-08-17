@@ -86,6 +86,15 @@ typedef struct s_sh
 	int			malloc;
 }	t_sh;
 
+typedef struct s_wikd
+{
+    int sIdx;
+    int pIdx;
+    int lastWildcardIdx;
+    int sBacktrackIdx;
+    int nextToWildcardIdx;
+}   t_wikd;
+
 //utils
 char *read_line(t_sh *sh, int fd);
 char *read_hline(t_sh *sh, int fd);

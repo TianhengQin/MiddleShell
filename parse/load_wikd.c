@@ -50,14 +50,14 @@ char *empt_arg(char *p)
     return (re);
 }
 
-typedef struct s_wikd
-{
-    int sIdx;
-    int pIdx;
-    int lastWildcardIdx;
-    int sBacktrackIdx;
-    int nextToWildcardIdx;
-}   t_wikd;
+// typedef struct s_wikd
+// {
+//     int sIdx;
+//     int pIdx;
+//     int lastWildcardIdx;
+//     int sBacktrackIdx;
+//     int nextToWildcardIdx;
+// }   t_wikd;
 
 void    init_wikd(t_wikd *w)
 {
@@ -68,23 +68,36 @@ void    init_wikd(t_wikd *w)
     w->nextToWildcardIdx = -1;
 }
 
+void    wikd_move_both(t_wikd *w)
+{
+    ++(w->sIdx);
+    ++(w->pIdx);
+}
+
+void    wikd_qm(t_wikd *w)
+{
+    ++(w->sIdx);
+    ++(w->pIdx);
+}
+
+void    wikd_star(t_wikd *w)
+{
+    w->lastWildcardIdx = w->pIdx;
+    w->nextToWildcardIdx = ++(w->pIdx);
+    w->sBacktrackIdx = w->sIdx;
+}
+
 int match_wikd_all(char *s, char *p, int ls, int lp)
 {
-    t_wikd w;
+    t_wikd  w;
+
     init_wikd(&w);
     while (w.sIdx < ls)
     {
         if (w.pIdx < lp && (p[w.pIdx] == '\21' || p[w.pIdx] == s[w.sIdx]))
-        {
-            ++w.sIdx;
-            ++w.pIdx;
-        }
+            wikd_qm(&w);
         else if (w.pIdx < lp && p[w.pIdx] == '\24')
-        {
-            w.lastWildcardIdx = w.pIdx;
-            w.nextToWildcardIdx = ++w.pIdx;
-            w.sBacktrackIdx = w.sIdx;
-        }
+            wikd_star(&w);
         else if (w.lastWildcardIdx == -1)
             return 0;
         else
@@ -131,6 +144,14 @@ int is_hiden(char *wikd)
     return (0);
 }
 
+void apend_no_wikd(t_sh *sh, char *wikd)
+{
+    wikd = sdupr(wikd);
+    dequo(wikd);
+    apends_bf(sh, wikd);
+    apend_bf(sh, RS);
+    free(wikd);
+}
 
 void apend_wikd(t_sh *sh, char *wikd)
 {
@@ -145,30 +166,20 @@ void apend_wikd(t_sh *sh, char *wikd)
     dent = readdir(dir);
     while (dent)
     {
-        // printf("%s ", dent->d_name);
         match = match_wikd(dent->d_name, wikd);
         if (match == 2)
             free_sh(sh, 2);
         else if (match && (dent->d_name[0] != '.' || is_hiden(wikd)))
         {
-            // printf(" match");
             sh->tokn = 1;
             apends_bf(sh, dent->d_name);
             apend_bf(sh, RS);
         }
-        // printf("\n");
         dent = readdir(dir);
     }
     closedir(dir);
     if (!sh->tokn)
-    {
-        // void dequo(char *c)
-        wikd = sdupr(wikd);
-        dequo(wikd);
-        apends_bf(sh, wikd);
-        apend_bf(sh, RS);
-        free(wikd);
-    }
+        apend_no_wikd(sh, wikd);
 }
 
 char *load_wikd(t_sh *sh, char *cmd)
