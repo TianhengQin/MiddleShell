@@ -78,6 +78,15 @@ int	free_exe(t_sh *sh, char **cs, char *pth, int ext)
 	return (ext);
 }
 
+void no_cmd(t_sh *sh, char **cs)
+{
+	if (cs[0][0] == '.' || cs[0][0] == '/')
+		fprint(2, "midsh: %s: No such file or directory\n", cs[0]);
+	else
+		fprint(2, "midsh: %s: command not found\n", cs[0]);
+	exit(free_exe(sh, cs, 0, 127));
+}
+
 int fork_exe(t_sh *sh, char **cs)
 {
 	char	*pth;
@@ -92,22 +101,12 @@ int fork_exe(t_sh *sh, char **cs)
 	{
 		set_signal_exe(cs[0]);
 		if (!pth)
-		{
-			if (cs[0][0] == '.' || cs[0][0] == '/')
-				fprint(2, "midsh: %s: No such file or directory\n", cs[0]);
-			else
-				fprint(2, "midsh: %s: command not found\n", cs[0]);
-			exit(free_exe(sh, cs, 0, 127));
-		}
+			no_cmd(sh, cs);
 		sh->envexe = bdenv(sh->env);
 		if (!sh->envexe)
 			exit(12);
 		execve(pth, cs, sh->envexe);
-		// free(pth);
-		// free_sh(sh, 0);
 		perror("midsh");
-		// free2(cs);
-		// free2(sh->envexe);
 		exit(free_exe(sh, cs, pth, 126));
 	}
 	free(pth);
@@ -115,38 +114,7 @@ int fork_exe(t_sh *sh, char **cs)
 	return(error_code(ext));
 }
 
-int run_exe(t_sh *sh, char **cs)
-{
-	char *pth;
-
-	pth = get_pth(sh->pwd, sh->evpth, cs[0]);
-	if (!pth)
-	{
-		if (cs[0][0] == '.' || cs[0][0] == '/')
-			fprint(2, "midsh: %s: No such file or directory\n", cs[0]);
-		else
-			fprint(2, "midsh: %s: command not found\n", cs[0]);
-		exit(127);
-	}
-	execve(pth, cs, sh->env);
-	free(pth);
-	free_sh(sh, 0);
-	perror("midsh");
-	free2(cs);
-	exit(126);
-	return 0;
-}
-
-int	run_cmd(t_sh *sh, char **cs, int fork)
-{
-	if (fork)
-		run_exe(sh, cs);
-	else
-		sh->exit_c = fork_exe(sh, cs);
-	return (sh->exit_c);
-}
-
-int run_one(t_sh *sh, char **cs, int fork)
+int run_one(t_sh *sh, char **cs)
 {
 	if (!cs[0])
 		return (sh->exit_c);
@@ -167,9 +135,7 @@ int run_one(t_sh *sh, char **cs, int fork)
 	else if (sncmp(cs[0], "exit", 5) == 0)
 		run_exit(sh, cs);
 	else
-		sh->exit_c = run_cmd(sh, cs, fork);
-	if (fork)
-		exit(sh->exit_c);
+		sh->exit_c = fork_exe(sh, cs);
 	return(sh->exit_c);
 }
 
@@ -394,7 +360,7 @@ int exe_one(t_sh *sh, char *cmd)
 				cmdss = split(cmds[0], RSS);
 				if (!cmdss)
 					return (12);
-				sh->exit_c = run_one(sh, cmdss, 0);
+				sh->exit_c = run_one(sh, cmdss);
 				free2(cmdss);
 			}
 			re_io(sh);

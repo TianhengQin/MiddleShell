@@ -187,7 +187,7 @@ int			exe_and(t_sh *sh, char *cmd1, char *cmd2);
 int exe_one(t_sh *sh, char *cmd);
 int exe_or(t_sh *sh, char *cmd1, char *cmd2);
 int exe_pip(t_sh *sh, char **cs);
-int run_one(t_sh *sh, char **cs, int fork);
+int run_one(t_sh *sh, char **cs);
 int trm_prth(char *s);
 int check_malloc(t_sh *sh, char *s1, char *s2, int i);
 
