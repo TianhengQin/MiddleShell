@@ -3,7 +3,13 @@
 int	error_code(int ext)
 {
 	if (WIFSIGNALED(ext))
+	{
+		if (ext == 3)
+			fprint(2, "Quit: 3\n");
+		if (ext == 2)
+			fprint(2, "\n");
 		return (128 + WTERMSIG(ext));
+	}
 	else if (WIFEXITED(ext))
 		return (WEXITSTATUS(ext));
 	else
