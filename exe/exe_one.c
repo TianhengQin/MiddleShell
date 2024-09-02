@@ -168,32 +168,19 @@ int	dup_redir(int fd, int tokn)
 	return (0);
 }
 
-int openfile(t_sh *sh, int tokn, char *file)
+int abgus_redir(char **fnams, char *fnam)
 {
-	char *fnam = sdupr(file);
-	// fprint(2, "file name %s\n", fnam);
-	fnam = load_var(sh, fnam);
-	fnam = repls_wikd(sh, fnam);
-	fnam = load_wikd(sh, fnam);
-	sde_trans(fnam);
-	// fprint(2, "file name %s\n", fnam);
-	char **fnams = ft_split(fnam, RSS);
-
-	if (tokn != 9 && (!fnams[0] || fnams[1]))
-	{
-		fprint(2, "midsh: ambiguous redirect\n");
-		free2(fnams);
-		free(fnam);
-		return (1);
-	}
-	free(fnam);
-	if (fnams[0])
-		fnam = sdup(fnams[0]);
-	else
-		fnam = sdup("");
+	fprint(2, "midsh: ambiguous redirect\n");
 	free2(fnams);
-	// fprint(2, "file name %s\n", fnam);
-	int fd = 0;
+	free(fnam);
+	return (1);
+}
+
+int	open_name(t_sh *sh, int tokn, char *fnam)
+{
+	int	fd;
+
+	fd = 0;
 	if (tokn == 3)
 		fd = open(fnam, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	else if (tokn == 4)
@@ -203,15 +190,41 @@ int openfile(t_sh *sh, int tokn, char *file)
 	else if (tokn == 9)
 	{
 		sh->hirdoc[10] = sh->hd_inx;
-		// fprint(2, "open: %s\n", sh->hirdoc);
 		fd = open(sh->hirdoc, O_RDONLY);
 	}
 	if (fd < 0)
 	{
 		free(fnam);
 		perror("midsh");
-		return (1);
 	}
+	return (fd);
+}
+
+int openfile(t_sh *sh, int tokn, char *file)
+{
+	char **fnams;
+	char *fnam = sdupr(file);
+	int	fd;
+	// fprint(2, "file name %s\n", fnam);
+	fnam = load_var(sh, fnam);
+	fnam = repls_wikd(sh, fnam);
+	fnam = load_wikd(sh, fnam);
+	sde_trans(fnam);
+	// fprint(2, "file name %s\n", fnam);
+	fnams = ft_split(fnam, RSS);
+
+	if (tokn != 9 && (!fnams[0] || fnams[1]))
+		return (abgus_redir(fnams, fnam));
+	free(fnam);
+	if (fnams[0])
+		fnam = sdup(fnams[0]);
+	else
+		fnam = sdup("");
+	free2(fnams);
+	// fprint(2, "file name %s\n", fnam);
+	fd = open_name(sh, tokn, fnam);
+	if (fd < 0)
+		return (1);
 	if (dup_redir(fd, tokn))
 		free_sh(sh, 2);
 	free(fnam);
