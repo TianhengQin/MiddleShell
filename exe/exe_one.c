@@ -228,51 +228,77 @@ int openfile(t_sh *sh, int tokn, char *file)
 	// 	close(fd);
 	// }
 
+void redir_skipquo(char *cmd, int *i)
+{
+	int	prth;
+
+	prth = 1;
+	(*i)++;
+	while (prth)
+	{
+		if (cmd[*i] == '(')
+			prth++;
+		else if (cmd[*i] == ')')
+			prth--;
+		(*i)++;
+	}
+}
+
+int handle_token(t_sh *sh, int tokn, char *cmd, int *i)
+{
+	int	j;
+
+	sh->hd_inx = 0;
+	if (tokn == 9)
+		sh->hd_inx = cmd[(*i) + 2];
+	j = 0;
+	while (cmd[(*i) + j] != RS)
+		j++;
+	while (cmd[(*i) + j] == RS)
+		j++;
+	if (openfile(sh, tokn, &cmd[(*i) + j]))
+		return (1);
+	while (j)
+	{
+		cmd[*i] = RS;
+		(*i)++;
+		j--;
+	}
+	while (cmd[*i] != RS)
+		cmd[(*i)++] = RS;
+	return (0);
+}
+
+			// prth = 1;
+			// i++;
+			// while (prth)
+			// {
+			// 	if (cmd[i] == '(')
+			// 		prth++;
+			// 	else if (cmd[i] == ')')
+			// 		prth--;
+			// 	i++;
+			// }
+
+
 int redir(t_sh *sh, char *cmd)
 {
-	int i = 0;
+	int i;
 	int tokn = 0;
-	int j = 0;
-	int prth = 0;
+
+	i = 0;
 	while (cmd[i])
 	{
 		// fprint(2, "idx %d\n", i);
 		if (cmd[i] == '(')
-		{
-			prth = 1;
-			i++;
-			while (prth)
-			{
-				if (cmd[i] == '(')
-					prth++;
-				else if (cmd[i] == ')')
-					prth--;
-				i++;
-			}
-		}
+			redir_skipquo(cmd, &i);
 		if ((i == 0 || cmd[i - 1] == RS) && cmd[i] != RS)
 		{
 			tokn = is_tokn(&cmd[i]);
 			if (tokn == 3 || tokn == 4 || tokn > 7)
 			{
-				sh->hd_inx = 0;
-				if (tokn == 9)
-					sh->hd_inx = cmd[i + 2];
-				j = 0;
-				while (cmd[i + j] != RS)
-					j++;
-				while (cmd[i + j] == RS)
-					j++;
-				if (openfile(sh, tokn, &cmd[i + j]))
-					return 1;
-				while (j)
-				{
-					cmd[i] = RS;
-					i++;
-					j--;
-				}
-				while (cmd[i] != RS)
-					cmd[i++] = RS;
+				if (handle_token(sh, tokn, cmd, &i))
+					return (1);
 			}
 			else
 				i++;
@@ -282,6 +308,25 @@ int redir(t_sh *sh, char *cmd)
 	}
 	return (0);
 }
+
+				// sh->hd_inx = 0;
+				// if (tokn == 9)
+				// 	sh->hd_inx = cmd[i + 2];
+				// j = 0;
+				// while (cmd[i + j] != RS)
+				// 	j++;
+				// while (cmd[i + j] == RS)
+				// 	j++;
+				// if (openfile(sh, tokn, &cmd[i + j]))
+				// 	return 1;
+				// while (j)
+				// {
+				// 	cmd[i] = RS;
+				// 	i++;
+				// 	j--;
+				// }
+				// while (cmd[i] != RS)
+				// 	cmd[i++] = RS;
 
 void dup_io(t_sh *sh, char *cmd)
 {

@@ -6,7 +6,7 @@
 /*   By: tiqin <tiqin@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/05 16:40:34 by tiqin             #+#    #+#             */
-/*   Updated: 2023/11/18 10:33:36 by tiqin            ###   ########.fr       */
+/*   Updated: 2024/09/02 17:56:51 by tiqin            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ctrl_c(int sig)
 {
 	write(1, "\n", 1);
 	rl_on_new_line();
-	// rl_replace_line("", 0);
+	rl_replace_line("", 0);
 	rl_redisplay();
 	// close(0);
 	// printf("%d\n", sig);
